@@ -1,0 +1,5 @@
+*.sqlite*
+garageplant-5dcd8-firebase-adminsdk-ar2y2-24c7e55d27.json
+.env
+.env.prod
+

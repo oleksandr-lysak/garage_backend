@@ -1,0 +1,27 @@
+#php-nginx
+FROM webdevops/php-nginx:8.4-alpine
+COPY docker/php/local.ini /opt/docker/etc/php/php.ini
+COPY docker/nginx/vhost.conf /opt/docker/etc/nginx/vhost.conf
+RUN apk add --no-cache nodejs npm curl
+
+#composer
+WORKDIR /app
+COPY composer.json composer.lock /app/
+RUN composer install --no-interaction --no-scripts --no-suggest --optimize-autoloader
+COPY . /app
+
+#npm
+RUN npm install && npm run build
+
+#supervisord
+RUN mkdir -p /var/log/supervisor
+COPY docker/supervisord.prod.conf /opt/docker/etc/supervisor.d/laravel.conf
+
+# Copy custom entrypoint and make it executable
+COPY docker/entrypoint.prod.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+COPY docker/run_notify.sh /usr/local/bin/run_notify.sh
+RUN chmod +x /usr/local/bin/run_notify.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

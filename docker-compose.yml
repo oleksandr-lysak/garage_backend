@@ -1,0 +1,108 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: garage_app
+        depends_on:
+            - db
+            - redis
+        restart: unless-stopped
+        working_dir: /var/www
+        env_file: .env
+        volumes:
+            - ./:/var/www
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/99-local.ini
+        ports:
+            - "9003:9003"
+        networks:
+            - garage_network
+
+    nginx:
+        image: nginx:alpine
+        container_name: garage_nginx
+        restart: unless-stopped
+        depends_on:
+            - app
+        ports:
+            - "100:80"
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/conf.d:/etc/nginx/conf.d
+        networks:
+            - garage_network
+
+    db:
+        image: mysql:8.0
+        container_name: garage_db
+        restart: unless-stopped
+        healthcheck:
+            test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+            interval: 5s
+            timeout: 3s
+            retries: 5
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE:-garage}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+            MYSQL_PASSWORD: ${DB_PASSWORD:-root}
+            MYSQL_USER: ${DB_USERNAME:-garage}
+        volumes:
+            - dbdata:/var/lib/mysql
+        ports:
+            - "3311:3306"
+        networks:
+            - garage_network
+
+    redis:
+        image: redis:alpine
+        container_name: garage_redis
+        restart: unless-stopped
+        ports:
+            - "6380:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - garage_network
+
+    queue:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: garage_queue
+        depends_on:
+            - db
+            - redis
+        restart: unless-stopped
+        working_dir: /var/www
+        env_file: .env
+        volumes:
+            - ./:/var/www
+        command: php artisan queue:work redis --queue=default --sleep=3 --tries=3 --timeout=0 --verbose
+        networks:
+            - garage_network
+
+    scheduler:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: garage_scheduler
+        depends_on:
+            - db
+            - redis
+        restart: unless-stopped
+        working_dir: /var/www
+        env_file: .env
+        volumes:
+            - ./:/var/www
+        command: php artisan schedule:work
+        networks:
+            - garage_network
+
+networks:
+    garage_network:
+        driver: bridge
+
+volumes:
+    dbdata:
+    redis_data:
+        driver: local
