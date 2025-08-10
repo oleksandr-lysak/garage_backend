@@ -34,8 +34,8 @@ Route::prefix('masters')->group(function () {
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/review', [MasterController::class, 'addReview']);
     });
-    Route::put('/{id}', [MasterController::class, 'updateProfile']);
-    Route::post('/{id}/gallery', [MasterController::class, 'addGalleryPhotos']);
+    Route::put('/{id}', [MasterController::class, 'updateProfile'])->middleware('auth:api');
+    Route::post('/{id}/gallery', [MasterController::class, 'addGalleryPhotos'])->middleware('auth:api');
     Route::post('/import-external/{service_id}', [MasterController::class, 'storeFromExternal']);
     Route::post('/import-external/google/{service_id}', [GoogleImportController::class, 'import']);
     Route::get('/{id}', [MasterController::class, 'getMaster']);
