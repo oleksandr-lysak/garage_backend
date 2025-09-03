@@ -84,13 +84,13 @@
                                 <!-- Check if master and master.data exist before rendering the image -->
                                 <img
                                     v-if="
-                                        master &&
-                                        master.data &&
-                                        master.data.main_photo &&
-                                        master.data.name
+                                        props.master &&
+                                        props.master.data &&
+                                        props.master.data.main_photo &&
+                                        props.master.data.name
                                     "
-                                    :src="`/${master.data.main_photo}`"
-                                    :alt="`Фото майстра ${master.data.name}`"
+                                    :src="`/${props.master.data.main_photo}`"
+                                    :alt="`Фото майстра ${props.master.data.name}`"
                                     class="h-48 w-48 rounded-full border-4 border-blue-500 object-cover shadow-2xl transition-transform duration-300 hover:scale-105 lg:h-64 lg:w-64 dark:border-green-500"
                                 />
                                 <!-- Show a placeholder if photo or name is missing -->
@@ -104,7 +104,7 @@
                                 <div
                                     :class="[
                                         'absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white dark:border-gray-800',
-                                        (master && master.data && typeof master.data.available !== 'undefined' && master.data.available)
+                                        (props.master && props.master.data && typeof props.master.data.available !== 'undefined' && props.master.data.available)
                                             ? 'bg-green-500'
                                             : 'bg-red-500',
                                     ]"
@@ -112,7 +112,7 @@
                                     <i
                                         :class="[
                                             'fa text-sm text-white',
-                                            master.data.available
+                                            props.master.data.available
                                                 ? 'fa-check'
                                                 : 'fa-times',
                                         ]"
@@ -129,12 +129,12 @@
                                 <h1
                                     class="mb-4 text-4xl font-bold text-gray-900 lg:text-5xl dark:text-white"
                                 >
-                                    {{ master.data.name }}
+                                    {{ props.master.data.name }}
                                 </h1>
                                 <p
                                     class="text-lg leading-relaxed text-gray-600 dark:text-gray-400"
                                 >
-                                    {{ master.data.description }}
+                                    {{ props.master.data.description }}
                                 </p>
                             </div>
 
@@ -144,7 +144,7 @@
                                     <div
                                         class="text-2xl font-bold text-blue-600 dark:text-blue-400"
                                     >
-                                        {{ master.data.rating }}
+                                        {{ props.master.data.rating }}
                                     </div>
                                     <div
                                         class="text-sm text-gray-600 dark:text-gray-400"
@@ -163,12 +163,12 @@
                                                 'text-yellow-400':
                                                     i <=
                                                     Math.round(
-                                                        master.data.rating,
+                                                        props.master.data.rating,
                                                     ),
                                                 'text-gray-300 dark:text-gray-500':
                                                     i >
                                                     Math.round(
-                                                        master.data.rating,
+                                                        props.master.data.rating,
                                                     ),
                                             }"
                                         ></i>
@@ -179,7 +179,7 @@
                                     <div
                                         class="text-2xl font-bold text-green-600 dark:text-green-400"
                                     >
-                                        {{ master.data.reviews_count }}
+                                        {{ props.master.data.reviews_count }}
                                     </div>
                                     <div
                                         class="text-sm text-gray-600 dark:text-gray-400"
@@ -192,7 +192,7 @@
                                     <div
                                         class="text-2xl font-bold text-purple-600 dark:text-purple-400"
                                     >
-                                        {{ master.data.age }}
+                                        {{ props.master.data.age }}
                                     </div>
                                     <div
                                         class="text-sm text-gray-600 dark:text-gray-400"
@@ -205,7 +205,7 @@
                                     <div
                                         class="text-2xl font-bold text-orange-600 dark:text-orange-400"
                                     >
-                                        {{ master.data.services.length }}
+                                        {{ props.master.data.services.length }}
                                     </div>
                                     <div
                                         class="text-sm text-gray-600 dark:text-gray-400"
@@ -225,17 +225,17 @@
                                     <i
                                         class="fa fa-location-dot text-blue-500"
                                     ></i>
-                                    <span>{{ master.data.address }}</span>
+                                    <span>{{ props.master.data.address }}</span>
                                 </div>
                                 <div
                                     class="flex items-center gap-2 text-gray-700 dark:text-gray-300"
                                 >
                                     <i class="fa fa-phone text-green-500"></i>
                                     <a
-                                        :href="`tel:${master.data.phone}`"
+                                        :href="`tel:${props.master.data.phone}`"
                                         class="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
                                     >
-                                        {{ master.data.phone }}
+                                        {{ props.master.data.phone }}
                                     </a>
                                 </div>
                             </div>
@@ -258,7 +258,7 @@
                         class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3"
                     >
                         <div
-                            v-for="service in master.data.services"
+                            v-for="service in props.master.data.services"
                             :key="service.id"
                             class="rounded-2xl border border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100 p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-blue-700 dark:from-blue-900 dark:to-blue-800"
                         >
@@ -304,7 +304,7 @@
                             <span
                                 class="text-lg font-normal text-gray-600 dark:text-gray-400"
                             >
-                                ({{ master.data.reviews_count }})
+                                ({{ props.master.data.reviews_count }})
                             </span>
                         </h2>
 
@@ -505,10 +505,10 @@
                                         {{ $t('masters.contact.phone') }}
                                     </h3>
                                     <a
-                                        :href="`tel:${master.data.phone}`"
+                                        :href="`tel:${props.master.data.phone}`"
                                         class="text-blue-600 transition-colors hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                     >
-                                        {{ master.data.phone }}
+                                        {{ props.master.data.phone }}
                                     </a>
                                 </div>
                             </div>
@@ -528,7 +528,7 @@
                                         {{ $t('masters.contact.address') }}
                                     </h3>
                                     <p class="text-gray-600 dark:text-gray-400">
-                                        {{ master.data.address }}
+                                        {{ props.master.data.address }}
                                     </p>
                                 </div>
                             </div>
@@ -550,13 +550,13 @@
                                     <p
                                         :class="[
                                             'font-medium',
-                                            master.data.available
+                                            props.master.data.available
                                                 ? 'text-green-600 dark:text-green-400'
                                                 : 'text-red-600 dark:text-red-400',
                                         ]"
                                     >
                                         {{
-                                            master.data.available
+                                            props.master.data.available
                                                 ? $t(
                                                       'masters.contact.available_now',
                                                   )
@@ -730,13 +730,19 @@ async function submitReview() {
         return;
     }
 
+    const masterId = props.master?.data?.id;
+    if (!masterId) {
+        alert('Master is not loaded yet');
+        return;
+    }
+
     try {
         // Log data being sent
         console.log('Sending review data:', {
             user_name: newReview.value.user_name,
             comment: newReview.value.comment,
             rating: newReview.value.rating,
-            master_id: props.master.data.id,
+            master_id: masterId,
         });
 
         const response = await fetch('/api/reviews/submit', {
@@ -748,7 +754,7 @@ async function submitReview() {
                 user_name: newReview.value.user_name,
                 comment: newReview.value.comment,
                 rating: newReview.value.rating,
-                master_id: props.master.data.id,
+                master_id: masterId,
             }),
         });
 
