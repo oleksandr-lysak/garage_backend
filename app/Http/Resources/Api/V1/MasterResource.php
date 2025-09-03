@@ -25,6 +25,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property float $distance
  * @property int $main_service_id
  * @property bool $approved
+ * @property int $reviews_count
+ * @property float $rating
+ * @property int $service_id
+ * @property int $tariff_id
+ * @property string $slug
+ * @property string|null $tariff
  */
 class MasterResource extends JsonResource
 {
@@ -64,7 +70,7 @@ class MasterResource extends JsonResource
             'approved' => isset($this->approved)
                 ? (bool) $this->approved
                 : (bool) ($this->user_id ?? 0),
-            'tariff' => isset($this->tariff) ? (string) $this->tariff : ($this->tariff->name ?? 'free'),
+            'tariff' => is_object($this->tariff) ? (string) $this->tariff->name : (string) $this->tariff,
             'tariff_id' => (int) $this->tariff_id,
             'slug' => (string) $this->slug,
         ];

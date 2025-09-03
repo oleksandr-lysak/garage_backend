@@ -4,27 +4,54 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Review extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'review',
+        'rating',
+        'master_id',
+        'user_id',
+    ];
 
-    protected $table = 'reviews';
+    protected $casts = [
+        'rating' => 'integer',
+        'master_id' => 'integer',
+        'user_id' => 'integer',
+    ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function master()
+    /**
+     * Get the master that owns the review
+     */
+    public function master(): BelongsTo
     {
         return $this->belongsTo(Master::class);
     }
 
-    public function getUserNameAttribute()
+    /**
+     * Get the user that wrote the review
+     */
+    public function user(): BelongsTo
     {
-        return $this->user->name ?? '';
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Scope for verified reviews only
+     */
+    public function scopeVerified($query)
+    {
+        return $query->where('verified_phone', true);
+    }
+
+    /**
+     * Scope for recent reviews
+     */
+    public function scopeRecent($query, $days = 30)
+    {
+        return $query->where('created_at', '>=', now()->subDays($days));
     }
 }

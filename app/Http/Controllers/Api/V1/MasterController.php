@@ -80,6 +80,7 @@ class MasterController extends Controller
     public function addReview(AddReviewRequest $request, MasterService $masterService): ReviewResource
     {
         $data = $request->validated();
+        /** @var \App\Models\User $user */
         $user = JWTAuth::user();
         $data['user_id'] = $user->id;
         $review = $masterService->addReview($data);

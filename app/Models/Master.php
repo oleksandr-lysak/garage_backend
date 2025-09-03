@@ -19,6 +19,11 @@ class Master extends Model
     ];
 
     protected $casts = [
+        'rating' => 'float',
+        'experience' => 'integer',
+        'available' => 'boolean',
+        'age' => 'integer',
+        'reviews_count' => 'integer',
         // 'address' => 'json',
         // 'phone' => CustomRawPhoneNumberCast::class.':INTERNATIONAL',
     ];
@@ -33,16 +38,22 @@ class Master extends Model
         'description',
         'age',
         'photo',
+        'main_photo',
         'service_id',
         'tariff_id',
         'slug',
         'user_id',
         'place_id',
         'rating_google',
+        'rating',
+        'experience',
+        'available',
+        'city',
+        'reviews_count',
     ];
 
     // Virtual attribute to keep backward compatibility
-    protected $appends = ['phone'];
+    protected $appends = ['phone', 'main_photo'];
 
     // Mutator: allow setting phone
     public function setPhoneAttribute($value): void
@@ -54,6 +65,12 @@ class Master extends Model
     public function getPhoneAttribute(): ?string
     {
         return $this->contact_phone ?? ($this->user->phone ?? null);
+    }
+
+    // Accessor: provide main_photo
+    public function getMainPhotoAttribute(): ?string
+    {
+        return $this->photo ?? '/images/default-master.jpg';
     }
 
     public function services(): BelongsToMany

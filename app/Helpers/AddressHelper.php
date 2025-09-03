@@ -9,8 +9,8 @@ class AddressHelper
         $url = 'https://maps.googleapis.com/maps/api/geocode/json';
 
         $params = [
-            'latlng' => "$latitude,$longitude", // координати
-            'key' => env('GOOGLE_API_KEY'), // ваш ключ API Google
+            'latlng' => "$latitude,$longitude",
+            'key' => config('services.google_places.key'),
         ];
 
         $query = http_build_query($params);

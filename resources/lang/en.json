@@ -1,6 +1,211 @@
 {
     "Welcome": "Welcome",
-    "home": "Home",
     "Login": "Login",
-    "Register": "Register"
+    "Register": "Register",
+    "home": "Home",
+
+    "masters": {
+        "title": "Auto Mechanics and Auto Shops",
+        "description": "Find the best auto mechanics and auto shops in your city. Quality car repair, diagnostics and maintenance.",
+        "keywords": "auto mechanics, auto shops, car repair, diagnostics, maintenance, technical inspection",
+        "page_title": "Auto Mechanics and Auto Shops - {city}",
+        "page_description": "List of qualified auto mechanics and auto shops in {city}. Ratings, reviews, prices and contacts.",
+
+        "filters": {
+            "title": "Search Filters",
+            "specialization": "Specialization",
+            "specialization_placeholder": "Choose specialization",
+            "min_rating": "Minimum rating",
+            "min_age": "Minimum age",
+            "max_age": "Maximum age",
+            "experience": "Work experience",
+            "price_range": "Price range",
+            "location": "Location",
+            "services": "Services",
+            "apply_filters": "Apply filters",
+            "clear_filters": "Clear filters",
+            "sort_by": "Sort by",
+            "sort_rating": "Rating",
+            "sort_experience": "Experience",
+            "sort_price": "Price",
+            "sort_distance": "Distance",
+            "sort_name": "Name",
+            "sort_age": "Age"
+        },
+
+        "search": {
+            "placeholder": "Search for masters, specializations or services...",
+            "search_button": "Search",
+            "advanced_search": "Advanced search"
+        },
+
+        "stats": {
+            "total_masters": "Total masters",
+            "available_now": "Available now",
+            "avg_rating": "Average rating",
+            "total_reviews": "Total reviews"
+        },
+
+        "view_options": {
+            "grid": "Grid",
+            "list": "List",
+            "map": "Map"
+        },
+
+        "pagination": {
+            "previous": "Previous",
+            "next": "Next",
+            "page": "Page",
+            "of": "of",
+            "showing": "Showing",
+            "to": "to",
+            "of_total": "of {total} results"
+        },
+
+        "no_results": {
+            "title": "No masters found",
+            "description": "Try changing filters or search query",
+            "suggestions": "Popular searches:",
+            "clear_filters": "Clear all filters"
+        },
+
+        "seo": {
+            "breadcrumb_home": "Home",
+            "breadcrumb_masters": "Masters",
+            "structured_data": "Structured data for search engines",
+            "sitemap": "Sitemap",
+            "robots": "Instructions for search robots"
+        },
+
+        "services": {
+            "title": "Services and Specializations",
+            "professional_service": "Professional service"
+        },
+
+        "reviews": {
+            "title": "Reviews",
+            "add_review": "Add Review",
+            "your_name": "Your Name",
+            "your_name_placeholder": "Enter your name",
+            "phone": "Phone Number",
+            "phone_placeholder": "+380XXXXXXXXX",
+            "rating": "Rating",
+            "comment": "Comment",
+            "comment_placeholder": "Tell us about your experience with this master...",
+            "submit": "Submit Review",
+        "phone_verification": "Phone Verification",
+        "phone_verification_description": "Enter your phone number to verify your review. The number will only be used for verification.",
+        "otp_verification": "OTP Verification",
+        "otp_verification_description": "Enter the 6-digit code we sent to your phone number",
+        "enter_name": "Please enter your name",
+        "enter_comment": "Please enter a comment",
+        "phone_invalid": "Invalid phone number format. Use format +380XXXXXXXXX",
+            "send_otp": "Send Code",
+            "otp_sent": "Code Sent!",
+            "otp_sent_description": "Enter the 6-digit code we sent to your phone number",
+            "otp_code": "Verification Code",
+            "otp_placeholder": "000000",
+            "no_reviews": {
+                "title": "No reviews yet",
+                "description": "Be the first to leave a review for this master"
+            },
+            "select_rating": "Please select a rating"
+        },
+
+        "contact": {
+            "title": "Contact and Location",
+            "phone": "Phone",
+            "address": "Address",
+            "availability": "Availability",
+            "available_now": "Available now",
+            "not_available": "Not available",
+            "map_placeholder": "Map will be added later"
+        }
+    },
+
+    "common": {
+        "loading": "Loading...",
+        "error": "Error",
+        "success": "Success",
+        "cancel": "Cancel",
+        "save": "Save",
+        "edit": "Edit",
+        "delete": "Delete",
+        "view": "View",
+        "close": "Close",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "reset": "Reset",
+        "filter": "Filter",
+        "sort": "Sort",
+        "search": "Search",
+        "all": "All",
+        "none": "None",
+        "select": "Select",
+        "rating": "Rating",
+        "reviews": "Reviews",
+        "age": "Age",
+        "services": "Services",
+        "available": "Available",
+        "not_available": "Not available",
+        "min": "Min",
+        "max": "Max",
+        "price": "Price",
+        "distance": "Distance",
+        "active_filters": "Active filters",
+        "hide": "Hide",
+        "photo": "Photo",
+        "service": "Service",
+        "coming_soon": "Coming soon",
+        "per_page": "per page",
+        "sort_name": "Name",
+        "sort_age": "Age",
+        "choose": "Choose",
+        "sending": "Sending...",
+        "submitting": "Submitting...",
+        "yes": "Yes",
+        "no": "No",
+        "available": "Available",
+        "unavailable": "Unavailable",
+        "online": "Online",
+        "offline": "Offline",
+        "rating": "Rating",
+        "reviews": "Reviews",
+        "experience": "Experience",
+        "years": "years",
+        "price": "Price",
+        "location": "Location",
+        "contact": "Contact",
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "website": "Website",
+        "working_hours": "Working hours",
+        "services": "Services",
+        "service": "Service",
+        "specialization": "Specialization",
+        "description": "Description",
+        "photos": "Photos",
+        "photo": "Photo",
+        "certificates": "Certificates",
+        "portfolio": "Portfolio",
+        "gallery": "Gallery",
+        "map": "Map",
+        "directions": "Directions",
+        "distance": "Distance",
+        "km": "km",
+        "m": "m",
+        "min": "min",
+        "hours": "hours",
+        "days": "days",
+        "weeks": "weeks",
+        "months": "months",
+        "hide": "Hide",
+        "active_filters": "Active filters",
+        "min": "Min",
+        "max": "Max",
+        "coming_soon": "Coming soon",
+        "per_page": "Per page"
+    }
 }

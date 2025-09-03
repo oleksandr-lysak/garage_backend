@@ -23,12 +23,13 @@ class SetLocale
         if ($acceptLang && ! $localeHeader) {
             // split by comma and take the first part before possible ';'
             $parts = explode(',', $acceptLang);
-            $primary = trim($parts[0] ?? '');
+            $primary = isset($parts[0]) ? trim($parts[0]) : '';
             // take language code before region, e.g. uk-UA -> uk
             $localeHeader = substr($primary, 0, 2);
         }
 
-        $locale = $localeHeader ?? $queryParam ?? config('app.locale', 'uk');
+        $sessionLocale = session('locale');
+        $locale = $localeHeader ?? $queryParam ?? $sessionLocale ?? config('app.locale', 'uk');
 
         App::setLocale($locale);
 

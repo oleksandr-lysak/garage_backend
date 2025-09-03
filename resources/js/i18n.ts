@@ -1,5 +1,9 @@
 import { createI18n } from 'vue-i18n'
 
+// Import language files
+import uk from '../lang/uk.json'
+import en from '../lang/en.json'
+
 declare global {
   interface Window {
     translations?: {
@@ -9,14 +13,17 @@ declare global {
   }
 }
 
-const locale = window?.translations?.locale || 'en'
+const locale = window?.translations?.locale || 'uk' // Default to Ukrainian
 const messages = {
-  [locale]: window?.translations?.messages || {},
+  uk,
+  en,
+  ...(window?.translations?.messages ? { [locale]: window.translations.messages } : {})
 }
 
 const i18n = createI18n({
   legacy: false,
   locale,
+  fallbackLocale: 'uk',
   messages,
 })
 

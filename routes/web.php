@@ -2,12 +2,25 @@
 
 use App\Http\Controllers\Api\V1\ProfileController;
 use App\Http\Controllers\Web\MasterController;
+use App\Http\Controllers\Web\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Main routes
 Route::get('/', [MasterController::class, 'index'])->name('welcome');
-Route::get('/masters', [MasterController::class, 'fetchMasters'])->name('masters.fetch');
+Route::get('/masters', [MasterController::class, 'index'])->name('masters.index');
 Route::get('/masters/{slug}', [MasterController::class, 'show'])->name('masters.show');
+
+// API routes for masters
+Route::prefix('api')->group(function () {
+    Route::get('/masters', [MasterController::class, 'fetchMasters'])->name('api.masters.fetch');
+    Route::get('/masters/filters', [MasterController::class, 'getFilters'])->name('api.masters.filters');
+
+    // Review routes
+    Route::post('/reviews/request-otp', [ReviewController::class, 'requestOtp']);
+    Route::post('/reviews/submit', [ReviewController::class, 'submit']);
+    Route::get('/reviews/master/{masterId}', [ReviewController::class, 'getMasterReviews']);
+});
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');

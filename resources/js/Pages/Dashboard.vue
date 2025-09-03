@@ -25,13 +25,16 @@ import MasterCard from '@/Components/MasterCard.vue';
             <MasterCard
                 v-for="(item, index) in 40"
                 :key="index"
+                :master-id="index"
                 imageUrl="https://images.unsplash.com/photo-1612838320302-4b3b3b3b3b3b"
-                :description=item.toString()
+                :description="item.toString()"
                 address="Testimonial"
                 name="Name"
                 phone="Position"
-                :age=5
+                :age="5"
                 :rating="5"
+                slug="test-slug"
+                :available="true"
             />
 
         </div>

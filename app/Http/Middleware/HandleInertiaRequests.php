@@ -46,6 +46,7 @@ class HandleInertiaRequests extends Middleware
                     'messages' => trans('messages'),
                 ];
             },
+            'csrf_token' => csrf_token(),
         ];
     }
 }

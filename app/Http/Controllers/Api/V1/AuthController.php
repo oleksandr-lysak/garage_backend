@@ -84,7 +84,11 @@ class AuthController extends Controller
         }
 
         // Rotate token
+        /** @var User|null $user */
         $user = $refreshModel->user;
+        if (! $user instanceof User) {
+            return response()->json(['error' => 'invalid_refresh_token'], 401);
+        }
         // Optionally revoke current and issue new
         $tokenService->revoke($refreshModel);
         $newRefresh = $tokenService->createRefreshToken($user);

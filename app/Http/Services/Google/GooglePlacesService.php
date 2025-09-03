@@ -19,7 +19,7 @@ class GooglePlacesService
      * @param string|null $serviceType specific service type to search for
      * @return array{results: array<int,array>, next_page_token?: string}
      */
-    public function fetch(string $pageToken = null, float $lat = 50.4501, float $lng = 30.5234, int $radius = 2500, ?string $serviceType = null): array
+    public function fetch(?string $pageToken = null, float $lat = 50.4501, float $lng = 30.5234, int $radius = 2500, ?string $serviceType = null): array
     {
         $params = [
             'key'       => config('services.google_places.key'),

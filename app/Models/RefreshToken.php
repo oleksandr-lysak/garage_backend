@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property string $plain_token Plain, unhashed refresh token for API responses.
+ */
 class RefreshToken extends Model
 {
     use HasFactory;

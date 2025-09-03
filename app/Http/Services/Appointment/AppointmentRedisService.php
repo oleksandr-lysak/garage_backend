@@ -99,7 +99,7 @@ class AppointmentRedisService
             $this->getMasterFreeIntervalsKey($masterId),
             '-inf',
             '+inf',
-            'WITHSCORES'
+            ['WITHSCORES']
         );
 
         return $this->isTimestampInFreeIntervals($freeIntervals, $checkTime->timestamp);
@@ -112,13 +112,14 @@ class AppointmentRedisService
 
         $allFreeIntervals = [];
 
+        /** @phpstan-ignore-next-line */
         $results = Redis::pipeline(function ($pipe) use ($masterIds) {
             foreach ($masterIds as $masterId) {
                 $pipe->zrangebyscore(
                     $this->getMasterFreeIntervalsKey($masterId),
                     '-inf',
                     '+inf',
-                    ['withscores' => true]
+                    ['WITHSCORES']
                 );
             }
         });

@@ -80,7 +80,7 @@ class MasterSearchService
         return DB::select($query, $queryParams);
     }
 
-    private static function calculateSearchRadius(int $zoom): float
+    private static function calculateSearchRadius(float $zoom): float
     {
         $earthRadiusKm = 20037.5;
 

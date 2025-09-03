@@ -26,6 +26,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $photo
  * @property float $distance
  * @property int $main_service_id
+ * @property int $reviews_count
+ * @property float $rating
+ * @property int $service_id
+ * @property int $tariff_id
+ * @property string $slug
+ * @property string|null $tariff
  */
 class MasterResource extends JsonResource
 {
@@ -55,9 +61,18 @@ class MasterResource extends JsonResource
             'main_service_id' => (int) $this->service_id,
             'slug' => (string) $this->slug,
             'services' => ServiceResource::collection($this->services),
+            'reviews' => $this->reviews ? $this->reviews->map(function ($review) {
+                return [
+                    'id' => $review->id,
+                    'rating' => $review->rating,
+                    'review' => $review->review,
+                    'created_at' => $review->created_at,
+                    'user' => $review->user ? $review->user->name : 'Anonymous'
+                ];
+            }) : [],
             'available' => $appointmentRedisService->isMasterAvailableAt($this->id, now()),
             'tariff_id' => (int) $this->tariff_id,
-            'tariff' => isset($this->tariff) ? (string) $this->tariff : ($this->tariff->name ?? 'free'),
+            'tariff' => is_object($this->tariff) ? (string) $this->tariff->name : (string) $this->tariff,
             'approved' => isset($this->approved)
                 ? (bool) $this->approved
                 : (bool) ($this->user_id ?? 0),

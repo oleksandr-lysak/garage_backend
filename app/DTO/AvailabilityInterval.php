@@ -2,7 +2,7 @@
 
 namespace App\DTO;
 
-use Carbon\Carbon;
+use Illuminate\Support\Carbon;
 
 /**
  * Simple value object representing an interval with start and end timestamps.

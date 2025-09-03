@@ -23,6 +23,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $services
  * @property mixed $photo
  * @property mixed $distance
+ * @property \App\Models\Master|null $master
+ * @property \App\Models\Client|null $client
  */
 class UserResource extends JsonResource
 {

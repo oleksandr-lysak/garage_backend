@@ -26,6 +26,11 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
             SetLocale::class,
         ]);
+
+        // Ensure CSRF protection is enabled for web routes
+        $middleware->web(append: [
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+        ]);
         $middleware->api(append: [
             SetLocale::class,
         ]);

@@ -19,8 +19,8 @@ class TelegramController extends Controller
             $userId = Auth::user()->user_code;
             $userName = Auth::user()->name;
         }
-        $application = env('APP_NAME', 'shit happened');
-        $environment = env('APP_ENV', 'Трапилась халепа');
+        $application = config('app.name');
+        $environment = config('app.env');
         $methodType = $request->method();
         $ip = $request->getClientIp();
         $url = $request->url();
