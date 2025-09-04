@@ -26,7 +26,7 @@ class SetAvailableMasterRequest extends FormRequest
     {
         return [
             'start_time' => 'required|date',
-            'duration' => 'required|integer',
+            'duration' => 'required|integer', //in minutes
         ];
     }
 

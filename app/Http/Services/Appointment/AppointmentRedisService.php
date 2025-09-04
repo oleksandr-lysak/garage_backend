@@ -7,6 +7,14 @@ use Illuminate\Support\Facades\Redis;
 
 class AppointmentRedisService
 {
+
+    //check if the master is available at the given time
+    public function getAvailability(int $masterId, Carbon $checkTime): bool
+    {
+        return $this->isMasterAvailableAt($masterId, $checkTime);
+    }
+
+
     public function getMasterBusyIntervalsKey(int $masterId): string
     {
         return "master:{$masterId}:busy_intervals";

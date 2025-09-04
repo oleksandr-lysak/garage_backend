@@ -42,6 +42,7 @@ Route::prefix('masters')->group(function () {
     Route::post('/{id}/work-schedule', [MasterController::class, 'updateWorkSchedule']);
     Route::prefix('/{id}')->group(function () {
         Route::post('/availability', [MasterController::class, 'setAvailable']);
+        Route::get('/availability', [MasterController::class, 'getAvailability']);
         Route::delete('/availability', [MasterController::class, 'setUnavailable']);
     });
 

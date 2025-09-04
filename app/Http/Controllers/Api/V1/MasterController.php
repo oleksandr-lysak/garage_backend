@@ -114,6 +114,15 @@ class MasterController extends Controller
         return response()->json(['message' => 'Master is unavailable']);
     }
 
+    public function getAvailability(string $id, AppointmentRedisService $appointmentRedisService): JsonResponse
+    {
+        $id = (int) $id;
+
+        $availability = $appointmentRedisService->getAvailability($id, now());
+
+        return response()->json(['availability' => $availability]);
+    }
+
     /**
      * Set the master as available.
      */
