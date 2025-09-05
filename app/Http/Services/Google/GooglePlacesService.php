@@ -67,16 +67,17 @@ class GooglePlacesService
      * Fetch detailed information for a place (needed to get phone number).
      *
      * @param string $placeId
+     * @param string $language
      * @return array<string, mixed>
      */
-    public function details(string $placeId): array
+    public function details(string $placeId, string $language = 'uk'): array
     {
         $params = [
             'key'      => config('services.google_places.key'),
             'place_id' => $placeId,
             // Request only fields we really need to minimise quota consumption
-            'fields'   => 'formatted_phone_number,international_phone_number,formatted_address,geometry,name,website,types',
-            'language' => 'uk',
+            'fields'   => 'formatted_phone_number,international_phone_number,formatted_address,geometry,name,website,types,editorial_summary',
+            'language' => $language,
         ];
 
         $response = Http::retry(3, 200)->get(self::ENDPOINT_DETAILS, $params);
