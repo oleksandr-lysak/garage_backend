@@ -104,7 +104,11 @@
                                 <div
                                     :class="[
                                         'absolute -bottom-2 -right-2 flex h-8 w-8 items-center justify-center rounded-full border-4 border-white dark:border-gray-800',
-                                        (props.master && props.master.data && typeof props.master.data.available !== 'undefined' && props.master.data.available)
+                                        props.master &&
+                                        props.master.data &&
+                                        typeof props.master.data.available !==
+                                            'undefined' &&
+                                        props.master.data.available
                                             ? 'bg-green-500'
                                             : 'bg-red-500',
                                     ]"
@@ -163,12 +167,14 @@
                                                 'text-yellow-400':
                                                     i <=
                                                     Math.round(
-                                                        props.master.data.rating,
+                                                        props.master.data
+                                                            .rating,
                                                     ),
                                                 'text-gray-300 dark:text-gray-500':
                                                     i >
                                                     Math.round(
-                                                        props.master.data.rating,
+                                                        props.master.data
+                                                            .rating,
                                                     ),
                                             }"
                                         ></i>
@@ -409,7 +415,9 @@
                     <!-- Reviews List -->
                     <div v-if="reviews && reviews.length > 0" class="space-y-4">
                         <div
-                            v-for="review in reviews.filter(r => r && (r.user_name || r.user?.name))"
+                            v-for="review in reviews.filter(
+                                (r) => r && (r.user_name || r.user?.name),
+                            )"
                             :key="review.id || review.created_at"
                             class="rounded-2xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-600 dark:bg-gray-700"
                         >
@@ -422,7 +430,13 @@
                                             class="text-sm font-semibold text-white"
                                         >
                                             {{
-                                                String(review.user_name || (review.user?.name) || 'A').charAt(0).toUpperCase()
+                                                String(
+                                                    review.user_name ||
+                                                        review.user?.name ||
+                                                        'A',
+                                                )
+                                                    .charAt(0)
+                                                    .toUpperCase()
                                             }}
                                         </span>
                                     </div>
@@ -430,7 +444,11 @@
                                         <h4
                                             class="font-semibold text-gray-900 dark:text-white"
                                         >
-                                            {{ review.user_name || (review.user?.name) || 'Anonymous' }}
+                                            {{
+                                                review.user_name ||
+                                                review.user?.name ||
+                                                'Anonymous'
+                                            }}
                                         </h4>
                                         <div class="flex items-center gap-1">
                                             <i
@@ -456,7 +474,11 @@
                             <p
                                 class="leading-relaxed text-gray-700 dark:text-gray-300"
                             >
-                                {{ review.review || review.comment || 'No comment' }}
+                                {{
+                                    review.review ||
+                                    review.comment ||
+                                    'No comment'
+                                }}
                             </p>
                         </div>
                     </div>
@@ -570,17 +592,21 @@
                         </div>
 
                         <!-- Map Placeholder -->
-                        <div
-                            class="flex h-64 items-center justify-center rounded-2xl bg-gray-200 dark:bg-gray-700"
-                        >
-                            <div
-                                class="text-center text-gray-500 dark:text-gray-400"
-                            >
-                                <i class="fa fa-map mb-2 text-4xl"></i>
-                                <p>
-                                    {{ $t('masters.contact.map_placeholder') }}
-                                </p>
-                            </div>
+                        <div>
+                            <MastersMap
+                                :masters="[
+                                    {
+                                        id: props.master.data.id,
+                                        name: props.master.data.name,
+                                        slug: props.master.data.slug,
+                                        latitude: props.master.data.latitude,
+                                        longitude: props.master.data.longitude,
+                                        address: props.master.data.address,
+                                        rating: props.master.data.rating,
+                                    },
+                                ]"
+                                height="300px"
+                            />
                         </div>
                     </div>
                 </section>
@@ -591,6 +617,7 @@
 
 <script setup lang="ts">
 import Breadcrumbs from '@/Components/Breadcrumbs.vue';
+import MastersMap from '@/Components/MastersMap.vue';
 import { getSEOConfig } from '@/config/seo';
 import { Head } from '@inertiajs/vue3';
 import { computed, onMounted, ref, watch } from 'vue';
@@ -694,7 +721,9 @@ async function loadReviews() {
     }
 
     try {
-        const response = await fetch(`/api/reviews/master/${props.master.data.id}`);
+        const response = await fetch(
+            `/api/reviews/master/${props.master.data.id}`,
+        );
         if (response.ok) {
             const result = await response.json();
             console.log('Reviews API response:', result);
@@ -780,7 +809,9 @@ async function submitReview() {
             alert(t('masters.reviews.review_submitted'));
         } else {
             const error = await response.json();
-            alert(error.message || 'Failed to submit review. Please try again.');
+            alert(
+                error.message || 'Failed to submit review. Please try again.',
+            );
         }
     } catch (error) {
         console.error('Error submitting review:', error);

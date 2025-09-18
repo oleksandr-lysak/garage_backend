@@ -1,11 +1,8 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-
             <!-- Page Heading -->
             <header
                 class="bg-white shadow dark:bg-gray-800"

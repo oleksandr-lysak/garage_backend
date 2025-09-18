@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import MasterCard from '@/Components/MasterCard.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
-import SecondaryButton from '@/Components/SecondaryButton.vue';
-import MasterCard from '@/Components/MasterCard.vue';
 </script>
 
 <template>
@@ -10,7 +10,7 @@ import MasterCard from '@/Components/MasterCard.vue';
 
     <AuthenticatedLayout>
         <template #header>
-            <div class="container flex-row columns-6 text-right">
+            <div class="container columns-6 flex-row text-right">
                 <div class="mr-4">
                     <SecondaryButton>dsadasd</SecondaryButton>
                 </div>
@@ -20,8 +20,7 @@ import MasterCard from '@/Components/MasterCard.vue';
             </div>
         </template>
 
-        <div class="py-0 mx-auto max-w-7xl sm:px-6 lg:px-8">
-
+        <div class="mx-auto max-w-7xl py-0 sm:px-6 lg:px-8">
             <MasterCard
                 v-for="(item, index) in 40"
                 :key="index"
@@ -36,7 +35,6 @@ import MasterCard from '@/Components/MasterCard.vue';
                 slug="test-slug"
                 :available="true"
             />
-
         </div>
     </AuthenticatedLayout>
 </template>

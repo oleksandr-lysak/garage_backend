@@ -49,6 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withCommands(
         [
             GenerateSlugForMasters::class,
+            \App\Console\Commands\ImportRatelist::class,
         ]
     )
     ->create();

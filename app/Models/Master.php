@@ -88,6 +88,7 @@ class Master extends Model
         return $this->hasMany(MasterGallery::class);
     }
 
+
     public function user()
     {
         return $this->belongsTo(User::class);

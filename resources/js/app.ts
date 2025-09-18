@@ -7,7 +7,6 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, DefineComponent, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout.vue';
-import GuestLayout from './Layouts/GuestLayout.vue';
 import i18n from './i18n';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -24,7 +23,9 @@ createInertiaApp({
 
             page.default.layout =
                 page.default.layout ||
-                (isAuthenticated && name !== 'MastersList' ? AuthenticatedLayout : null);
+                (isAuthenticated && name !== 'MastersList'
+                    ? AuthenticatedLayout
+                    : null);
             return page;
         }),
     setup({ el, App, props, plugin }) {

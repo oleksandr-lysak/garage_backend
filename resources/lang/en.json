@@ -52,6 +52,12 @@
             "map": "Map"
         },
 
+        "map": {
+            "title": "Masters Map",
+            "count": "Count",
+            "view_profile": "View profile"
+        },
+
         "pagination": {
             "previous": "Previous",
             "next": "Next",
