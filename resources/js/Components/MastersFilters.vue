@@ -51,7 +51,7 @@
             </div>
 
             <!-- Quick Filters -->
-            <div class="grid grid-cols-2 gap-3 lg:grid-cols-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 lg:grid-cols-4">
                 <!-- Services -->
                 <div class="space-y-1">
                     <label
@@ -108,8 +108,8 @@
                         class="w-full rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-sm text-gray-900 transition-colors duration-200 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                     >
                         <option value="">{{ $t('common.all') }}</option>
-                        <option value="1">{{ $t('common.available') }}</option>
-                        <option value="0">
+                        <option value="true">{{ $t('common.available') }}</option>
+                        <option value="false">
                             {{ $t('common.not_available') }}
                         </option>
                     </select>
@@ -369,7 +369,7 @@ const getFilterDisplayName = (key: string, value: any): string => {
         case 'minRating':
             return `${t('masters.filters.min_rating')}: ${value}+`;
         case 'available':
-            return value === '1'
+            return value === 'true'
                 ? t('common.available')
                 : t('common.not_available');
         case 'minPrice':

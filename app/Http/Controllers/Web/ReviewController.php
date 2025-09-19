@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\GetMasterReviewsRequest;
+use App\Http\Requests\RequestReviewOtpRequest;
+use App\Http\Requests\SubmitReviewRequest;
+use App\Http\Resources\Web\MasterReviewsResponse;
+use App\Http\Resources\Web\RequestOtpResponse;
+use App\Http\Resources\Web\SubmitReviewResponse;
 use App\Http\Services\ReviewService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class ReviewController extends Controller
@@ -19,58 +24,37 @@ class ReviewController extends Controller
     /**
      * Request OTP for review submission
      */
-    public function requestOtp(Request $request): JsonResponse
+    public function requestOtp(RequestReviewOtpRequest $request): JsonResponse
     {
-        $request->validate([
-            'phone' => 'required|string|min:10|max:15',
-            'master_id' => 'required|integer|exists:masters,id'
-        ]);
-
         $result = $this->reviewService->requestReviewOtp(
-            $request->phone,
-            $request->master_id
+            $request->validated()['phone'],
+            $request->validated()['master_id']
         );
 
-        if ($result['success']) {
-            return response()->json($result, 200);
-        }
-
-        return response()->json($result, 400);
+        return (new RequestOtpResponse($result))->response()->setStatusCode($result['success'] ? 200 : 400);
     }
 
     /**
      * Submit review without OTP verification (simple review)
      */
-    public function submit(Request $request): JsonResponse
+    public function submit(SubmitReviewRequest $request): JsonResponse
     {
-        // Log incoming data for debugging
-        \Log::info('Review submission request data:', $request->all());
+        $validated = $request->validated();
 
-        $request->validate([
-            'user_name' => 'required|string|max:255',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'required|string|min:10|max:1000',
-            'master_id' => 'required|integer|exists:masters,id'
-        ]);
+        $result = $this->reviewService->submitReview($validated, $validated['master_id']);
 
-        $result = $this->reviewService->submitReview($request->all(), $request->master_id);
-
-        if ($result['success']) {
-            return response()->json($result, 201);
-        }
-
-        return response()->json($result, 400);
+        return (new SubmitReviewResponse($result))->response()->setStatusCode($result['success'] ? 201 : 400);
     }
 
     /**
      * Get reviews for master
      */
-    public function getMasterReviews(Request $request, int $masterId): JsonResponse
+    public function getMasterReviews(GetMasterReviewsRequest $request, int $masterId): JsonResponse
     {
-        $limit = $request->get('limit', 10);
+        $limit = $request->validated()['limit'] ?? 10;
 
         $result = $this->reviewService->getMasterReviews($masterId, $limit);
 
-        return response()->json($result, 200);
+        return (new MasterReviewsResponse($result))->response()->setStatusCode(200);
     }
 }

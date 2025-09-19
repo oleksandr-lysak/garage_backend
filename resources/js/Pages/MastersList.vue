@@ -305,13 +305,38 @@ const fetchMasters = async (url = '/api/masters') => {
         params.append('per_page', effectivePerPage.toString());
         params.append('sort_by', filters.value.sortBy);
 
-        // Add filters
+        // Add filters (map to backend expected keys)
         Object.entries(filters.value).forEach(([key, value]) => {
             if (value !== '' && value !== null && value !== undefined) {
+                let paramKey = key;
+                let paramValue: string | number = value as any;
+
+                switch (key) {
+                    case 'minRating':
+                        paramKey = 'min_rating';
+                        break;
+                    case 'minPrice':
+                        paramKey = 'min_price';
+                        break;
+                    case 'maxPrice':
+                        paramKey = 'max_price';
+                        break;
+                    case 'available':
+                        // ensure boolean-like strings "true"/"false" as used by backend
+                        paramValue = String(value);
+                        break;
+                    case 'distance':
+                        if (typeof value === 'string') {
+                            const n = parseInt(value, 10);
+                            if (! Number.isNaN(n)) paramValue = n;
+                        }
+                        break;
+                }
+
                 if (Array.isArray(value) && value.length > 0) {
-                    value.forEach((v: any) => params.append(key, v.toString()));
+                    value.forEach((v: any) => params.append(paramKey, v.toString()));
                 } else {
-                    params.append(key, value.toString());
+                    params.append(paramKey, paramValue.toString());
                 }
             }
         });
