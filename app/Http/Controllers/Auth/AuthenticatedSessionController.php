@@ -15,6 +15,8 @@ class AuthenticatedSessionController extends Controller
 {
     /**
      * Display the login view.
+     *
+     * @return Response
      */
     public function create(): Response
     {
@@ -26,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Handle an incoming authentication request.
+     *
+     * @param LoginRequest $request
+     * @return RedirectResponse
+     * @throws AuthenticationException
      */
     public function store(LoginRequest $request): RedirectResponse
     {
@@ -38,6 +44,10 @@ class AuthenticatedSessionController extends Controller
 
     /**
      * Destroy an authenticated session.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws AuthenticationException
      */
     public function destroy(Request $request): RedirectResponse
     {

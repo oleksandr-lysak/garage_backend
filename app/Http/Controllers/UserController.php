@@ -10,6 +10,14 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    /**
+     * Verify the user's code
+     *
+     * @param VerifyCodeRequest $request
+     * @param SmsService $smsService
+     * @param UserService $userService
+     * @return JsonResponse
+     */
     public function verifyCode(VerifyCodeRequest $request, SmsService $smsService, UserService $userService): JsonResponse
     {
         $data = $request->validated();
@@ -31,11 +39,13 @@ class UserController extends Controller
             return response()->json(['error' => 'Token not created'], 500);
         }
 
+        // Verify the user's phone number
         if (is_null($user->phone_verified_at)) {
             $user->phone_verified_at = now();
             $user->save();
         }
 
+        // Return the user and token
         return response()->json([
             'user' => new UserResource($user),
             'token' => $token,

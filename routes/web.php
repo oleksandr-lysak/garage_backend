@@ -12,7 +12,7 @@ Route::get('/masters', [MasterController::class, 'index'])->name('masters.index'
 Route::get('/masters/{slug}', [MasterController::class, 'show'])->name('masters.show');
 
 // API routes for masters
-Route::prefix('api')->group(function () {
+Route::prefix('web-api')->middleware('api')->group(function () {
     Route::get('/masters', [MasterController::class, 'fetchMasters'])->name('api.masters.fetch');
     Route::get('/masters/filters', [MasterController::class, 'getFilters'])->name('api.masters.filters');
 

@@ -14,6 +14,11 @@ use Inertia\Response;
 
 class MasterController extends Controller
 {
+    /**
+     * Display the master list page
+     *
+     * @return Response
+     */
     public function index(): Response
     {
         return Inertia::render('MastersList', [
@@ -25,6 +30,13 @@ class MasterController extends Controller
         ]);
     }
 
+    /**
+     * Display the master page
+     *
+     * @param Request $request
+     * @param string $slug
+     * @return Response
+     */
     public function show(Request $request, string $slug)
     {
         $master = Master::where('slug', $slug)->firstOrFail();
@@ -38,6 +50,13 @@ class MasterController extends Controller
         ]);
     }
 
+    /**
+     * Fetch the masters
+     *
+     * @param FetchMastersRequest $request
+     * @param MasterListService $service
+     * @return JsonResponse
+     */
     public function fetchMasters(FetchMastersRequest $request, MasterListService $service)
     {
         $masters = $service->list($request->validated());
@@ -45,6 +64,11 @@ class MasterController extends Controller
         return (new MasterListResponse($masters))->response();
     }
 
+    /**
+     * Get the filters
+     *
+     * @return JsonResponse
+     */
     public function getFilters()
     {
         return response()->json([

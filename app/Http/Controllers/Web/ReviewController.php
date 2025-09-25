@@ -23,6 +23,9 @@ class ReviewController extends Controller
 
     /**
      * Request OTP for review submission
+     *
+     * @param RequestReviewOtpRequest $request
+     * @return JsonResponse
      */
     public function requestOtp(RequestReviewOtpRequest $request): JsonResponse
     {
@@ -36,6 +39,9 @@ class ReviewController extends Controller
 
     /**
      * Submit review without OTP verification (simple review)
+     *
+     * @param SubmitReviewRequest $request
+     * @return JsonResponse
      */
     public function submit(SubmitReviewRequest $request): JsonResponse
     {
@@ -48,6 +54,10 @@ class ReviewController extends Controller
 
     /**
      * Get reviews for master
+     *
+     * @param GetMasterReviewsRequest $request
+     * @param int $masterId
+     * @return JsonResponse
      */
     public function getMasterReviews(GetMasterReviewsRequest $request, int $masterId): JsonResponse
     {
