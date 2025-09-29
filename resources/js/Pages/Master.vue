@@ -8,6 +8,8 @@
             <div class="text-center">
                 <div
                     class="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"
+                    role="progressbar"
+                    aria-label="Loading"
                 ></div>
                 <p class="text-gray-600 dark:text-gray-400">
                     {{ $t('common.loading') }}
@@ -23,6 +25,8 @@
             <div class="text-center">
                 <i
                     class="fa fa-exclamation-triangle mb-4 text-6xl text-red-500"
+                    aria-label="Error"
+                    role="img"
                 ></i>
                 <h3
                     class="mb-2 text-lg font-medium text-gray-900 dark:text-white"
@@ -42,6 +46,11 @@
                 <title>{{ metaTags.title }}</title>
                 <meta name="description" :content="metaTags.description" />
                 <meta name="keywords" :content="metaTags.keywords" />
+                <meta name="author" :content="metaTags.author" />
+                <meta name="robots" :content="metaTags.robots" />
+                <meta name="viewport" :content="metaTags.viewport" />
+                <meta name="theme-color" :content="metaTags.themeColor" />
+                <meta name="language" content="uk" />
                 <link rel="canonical" :href="metaTags.canonicalUrl" />
 
                 <!-- Open Graph -->
@@ -50,18 +59,22 @@
                     property="og:description"
                     :content="metaTags.ogDescription"
                 />
-                <meta property="og:type" content="profile" />
+                <meta property="og:type" :content="metaTags.ogType" />
                 <meta property="og:url" :href="metaTags.ogUrl" />
                 <meta property="og:image" :content="metaTags.ogImage" />
+                <meta property="og:locale" content="uk_UA" />
+                <meta property="og:site_name" :content="metaTags.ogSiteName" />
+                <meta v-if="metaTags.rating" property="og:rating" :content="metaTags.rating" />
+                <meta v-if="metaTags.reviewCount" property="og:review:count" :content="metaTags.reviewCount" />
 
                 <!-- Twitter Card -->
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" :content="metaTags.ogTitle" />
+                <meta name="twitter:card" :content="metaTags.twitterCard" />
+                <meta name="twitter:title" :content="metaTags.twitterTitle" />
                 <meta
                     name="twitter:description"
-                    :content="metaTags.ogDescription"
+                    :content="metaTags.twitterDescription"
                 />
-                <meta name="twitter:image" :content="metaTags.ogImage" />
+                <meta name="twitter:image" :content="metaTags.twitterImage" />
             </Head>
 
             <!-- Breadcrumbs -->
@@ -120,24 +133,20 @@
                                                 ? 'fa-check'
                                                 : 'fa-times',
                                         ]"
+                                        :aria-label="props.master.data.available ? $t('common.available') : $t('common.not_available')"
+                                        role="img"
                                     ></i>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Master Info -->
-                        <div
-                            class="space-y-6 text-center lg:col-span-2 lg:text-left"
-                        >
+                        <div class="h-card space-y-6 text-center lg:col-span-2 lg:text-left">
                             <div>
-                                <h1
-                                    class="mb-4 text-4xl font-bold text-gray-900 lg:text-5xl dark:text-white"
-                                >
+                                <h1 class="mb-4 text-4xl font-bold text-gray-900 lg:text-5xl dark:text-white p-name">
                                     {{ props.master.data.name }}
                                 </h1>
-                                <p
-                                    class="text-lg leading-relaxed text-gray-600 dark:text-gray-400"
-                                >
+                                <p class="text-lg leading-relaxed text-gray-600 dark:text-gray-400 p-note">
                                     {{ props.master.data.description }}
                                 </p>
                             </div>
@@ -145,9 +154,7 @@
                             <!-- Quick Stats -->
                             <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 <div class="text-center">
-                                    <div
-                                        class="text-2xl font-bold text-blue-600 dark:text-blue-400"
-                                    >
+                                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 p-rating">
                                         {{ props.master.data.rating }}
                                     </div>
                                     <div
@@ -177,6 +184,8 @@
                                                             .rating,
                                                     ),
                                             }"
+                                            :aria-label="i <= Math.round(props.master.data.rating) ? $t('common.star_filled') : $t('common.star_empty')"
+                                            role="img"
                                         ></i>
                                     </div>
                                 </div>
@@ -222,25 +231,15 @@
                             </div>
 
                             <!-- Contact Info -->
-                            <div
-                                class="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start"
-                            >
-                                <div
-                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300"
-                                >
-                                    <i
-                                        class="fa fa-location-dot text-blue-500"
-                                    ></i>
-                                    <span>{{ props.master.data.address }}</span>
+                            <div class="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                    <i class="fa fa-location-dot text-blue-500" :aria-label="$t('common.location_icon')" role="img"></i>
+                                    <span class="p-street-address">{{ props.master.data.address }}</span>
                                 </div>
-                                <div
-                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300"
-                                >
-                                    <i class="fa fa-phone text-green-500"></i>
-                                    <a
-                                        :href="`tel:${props.master.data.phone}`"
-                                        class="transition-colors hover:text-blue-600 dark:hover:text-blue-400"
-                                    >
+                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
+                                    <i class="fa fa-phone text-green-500" :aria-label="$t('common.phone_icon')" role="img"></i>
+                                    <a :href="`tel:${props.master.data.phone}`"
+                                        class="p-tel transition-colors hover:text-blue-600 dark:hover:text-blue-400">
                                         {{ props.master.data.phone }}
                                     </a>
                                 </div>
@@ -274,6 +273,8 @@
                                 >
                                     <i
                                         class="fa fa-wrench text-xl text-white"
+                                        :aria-label="$t('masters.services.icon')"
+                                        role="img"
                                     ></i>
                                 </div>
                                 <div>
@@ -305,7 +306,10 @@
                         <h2
                             class="flex items-center gap-3 text-3xl font-bold text-gray-900 dark:text-white"
                         >
-                            <i class="fa fa-star text-yellow-500"></i>
+                            <i class="fa fa-star text-yellow-500"
+                                :aria-label="$t('masters.reviews.icon')"
+                                role="img"
+                            ></i>
                             {{ $t('masters.reviews.title') }}
                             <span
                                 class="text-lg font-normal text-gray-600 dark:text-gray-400"
@@ -318,7 +322,10 @@
                             @click="showReviewForm = !showReviewForm"
                             class="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-blue-700"
                         >
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-plus"
+                                :aria-label="$t('masters.reviews.add_icon')"
+                                role="img"
+                            ></i>
                             {{ $t('masters.reviews.add_review') }}
                         </button>
                     </div>
@@ -461,6 +468,8 @@
                                                     'text-gray-300 dark:text-gray-500':
                                                         i > review.rating,
                                                 }"
+                                                :aria-label="i <= review.rating ? $t('common.star_filled') : $t('common.star_empty')"
+                                                role="img"
                                             ></i>
                                         </div>
                                     </div>
@@ -486,6 +495,8 @@
                     <div v-else class="py-12 text-center">
                         <i
                             class="fa fa-comments mb-4 text-6xl text-gray-400"
+                            :aria-label="$t('masters.reviews.no_reviews.icon')"
+                            role="img"
                         ></i>
                         <h3
                             class="mb-2 text-lg font-medium text-gray-900 dark:text-white"
@@ -518,6 +529,8 @@
                                 >
                                     <i
                                         class="fa fa-phone text-xl text-white"
+                                        :aria-label="$t('masters.contact.phone_icon')"
+                                        role="img"
                                     ></i>
                                 </div>
                                 <div>
@@ -541,6 +554,8 @@
                                 >
                                     <i
                                         class="fa fa-location-dot text-xl text-white"
+                                        :aria-label="$t('masters.contact.location_icon')"
+                                        role="img"
                                     ></i>
                                 </div>
                                 <div>
@@ -561,6 +576,8 @@
                                 >
                                     <i
                                         class="fa fa-clock text-xl text-white"
+                                        :aria-label="$t('masters.contact.time_icon')"
+                                        role="img"
                                     ></i>
                                 </div>
                                 <div>
@@ -640,19 +657,34 @@ const metaTags = computed(() => {
     if (!props.master?.data) return {};
 
     const masterData = props.master.data;
-    const services =
-        masterData.services?.map((s: any) => s.name).join(', ') || '';
+    const services = masterData.services?.map((s: any) => s.name).join(', ') || '';
     const city = masterData.address?.split(',')[0] || '';
+    const rating = masterData.rating ? `${masterData.rating}/5` : '';
+    const ratingText = rating ? ` | Рейтинг ${rating}` : '';
+    const reviewsText = masterData.reviews_count ? ` | ${masterData.reviews_count} відгуків` : '';
 
     return {
-        title: `${masterData.name} - ${services} у ${city}`,
+        title: `${masterData.name} - ${services} у ${city}${ratingText}${reviewsText}`,
         description: `Персональна сторінка майстра ${masterData.name}. ${masterData.description} Перегляньте спеціалізації, відгуки та контактну інформацію.`,
-        keywords: `${masterData.name}, ${services}, майстер, ${city}, автомайстерня, ремонт авто`,
+        keywords: `${masterData.name}, ${services}, майстер, ${city}, автомайстерня, ремонт авто, автосервіс`,
         canonicalUrl: `${window.location.origin}/masters/${masterData.slug}`,
-        ogTitle: `${masterData.name} - ${services} у ${city}`,
+        ogTitle: `${masterData.name} - ${services} у ${city}${ratingText}`,
         ogDescription: `Персональна сторінка майстра ${masterData.name}. ${masterData.description}`,
         ogUrl: `${window.location.origin}/masters/${masterData.slug}`,
         ogImage: `${window.location.origin}/${masterData.main_photo}`,
+        ogLocale: 'uk_UA',
+        ogSiteName: 'Garage',
+        ogType: 'profile',
+        twitterCard: 'summary_large_image',
+        twitterTitle: `${masterData.name} - ${services} у ${city}${ratingText}`,
+        twitterDescription: `${masterData.description}`,
+        twitterImage: `${window.location.origin}/${masterData.main_photo}`,
+        author: masterData.name,
+        robots: 'index, follow',
+        viewport: 'width=device-width, initial-scale=1.0',
+        themeColor: '#1d4ed8',
+        rating: masterData.rating || undefined,
+        reviewCount: masterData.reviews_count || undefined,
     };
 });
 
@@ -661,24 +693,64 @@ const structuredData = computed(() => {
     if (!props.master?.data) return '';
 
     const masterData = props.master.data;
+    const services = masterData.services?.map((s: any) => s.name) || [];
+    const city = masterData.address?.split(',')[0] || '';
+
     return JSON.stringify({
         '@context': 'https://schema.org',
-        '@type': 'Person',
+        '@type': 'LocalBusiness',
+        '@id': `${window.location.origin}/masters/${masterData.slug}`,
         name: masterData.name,
         description: masterData.description,
         image: `${window.location.origin}/${masterData.main_photo}`,
+        url: `${window.location.origin}/masters/${masterData.slug}`,
+        telephone: masterData.phone,
         address: {
             '@type': 'PostalAddress',
-            addressLocality: masterData.address?.split(',')[0] || '',
+            addressLocality: city,
             addressCountry: 'UA',
+            streetAddress: masterData.address
         },
-        telephone: masterData.phone,
-        knowsAbout: masterData.services?.map((s: any) => s.name) || [],
-        aggregateRating: {
+        geo: {
+            '@type': 'GeoCoordinates',
+            latitude: masterData.latitude,
+            longitude: masterData.longitude
+        },
+        aggregateRating: masterData.rating ? {
             '@type': 'AggregateRating',
             ratingValue: masterData.rating,
             reviewCount: masterData.reviews_count,
+            bestRating: '5',
+            worstRating: '0'
+        } : undefined,
+        review: masterData.reviews?.map((review: { rating: number; user_name?: string; user?: string; review: string; created_at: string }) => ({
+            '@type': 'Review',
+            reviewRating: {
+                '@type': 'Rating',
+                ratingValue: review.rating
+            },
+            author: {
+                '@type': 'Person',
+                name: review.user_name || review.user || 'Anonymous'
+            },
+            reviewBody: review.review,
+            datePublished: review.created_at
+        })),
+        makesOffer: services.map((service: string) => ({
+            '@type': 'Offer',
+            itemOffered: {
+                '@type': 'Service',
+                name: service
+            }
+        })),
+        openingHoursSpecification: {
+            '@type': 'OpeningHoursSpecification',
+            dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            opens: '09:00',
+            closes: '18:00'
         },
+        priceRange: '₴₴',
+        currenciesAccepted: 'UAH'
     });
 });
 

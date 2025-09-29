@@ -27,7 +27,7 @@
             >
                 <img
                     :src="imageUrl || '/images/default-master.jpg'"
-                    :alt="`${$t('common.photo')} ${name}`"
+                    :alt="$t('masters.card.photo_of', { name })"
                     class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
 
@@ -35,7 +35,11 @@
                 <div
                     class="absolute bottom-3 left-3 flex items-center space-x-1 rounded-lg bg-white/90 px-2 py-1 backdrop-blur-sm dark:bg-gray-800/90"
                 >
-                    <i class="fa fa-star text-sm text-yellow-500"></i>
+                    <i
+                        class="fa fa-star text-sm text-yellow-500"
+                        :aria-label="$t('common.rating_star')"
+                        role="img"
+                    ></i>
                     <span
                         class="text-sm font-semibold text-gray-900 dark:text-white"
                         >{{ rating }}</span
@@ -96,6 +100,8 @@
                     >
                         <i
                             class="fa fa-location-dot mr-2 w-4 text-blue-500"
+                            :aria-label="$t('common.location_icon')"
+                            role="img"
                         ></i>
                         <span class="truncate">{{ address }}</span>
                     </div>
@@ -104,7 +110,11 @@
                         <div
                             class="flex items-center text-sm text-gray-600 dark:text-gray-400"
                         >
-                            <i class="fa fa-phone mr-2 w-4 text-green-500"></i>
+                            <i
+                                class="fa fa-phone mr-2 w-4 text-green-500"
+                                :aria-label="$t('common.phone_icon')"
+                                role="img"
+                            ></i>
                             <span class="font-mono">{{
                                 formatPhone(phone)
                             }}</span>

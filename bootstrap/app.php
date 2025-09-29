@@ -43,13 +43,18 @@ return Application::configure(basePath: dirname(__DIR__))
         });
         Integration::handles($exceptions);
     })
-    ->withSchedule(
-        function (Schedule $schedule) {}
-    )
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('sitemap:generate')
+            ->daily()
+            ->at('00:00')
+            ->onSuccess(fn () => Log::info('Sitemap generated successfully'))
+            ->onFailure(fn () => Log::error('Failed to generate sitemap'));
+    })
     ->withCommands(
         [
             GenerateSlugForMasters::class,
             \App\Console\Commands\ImportRatelist::class,
+            \App\Commands\GenerateSitemap::class,
         ]
     )
     ->create();

@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\MasterController;
 use App\Http\Controllers\Web\ReviewController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Artisan;
 
 // Main routes
 Route::get('/', [MasterController::class, 'index'])->name('welcome');
@@ -40,6 +41,16 @@ Route::get('/locale/{locale}', function ($locale) {
     session(['locale' => $locale]);
 
     return back();
+});
+
+// Sitemap
+Route::get('sitemap.xml', function () {
+    if (!file_exists(public_path('sitemap.xml'))) {
+        Artisan::call('sitemap:generate');
+    }
+    return response()->file(public_path('sitemap.xml'), [
+        'Content-Type' => 'application/xml'
+    ]);
 });
 
 // Include admin routes

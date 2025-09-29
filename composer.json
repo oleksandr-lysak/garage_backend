@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.10",
         "predis/predis": "^3.2",
         "sentry/sentry-laravel": "^4.15",
+        "spatie/laravel-sitemap": "^7.3",
         "symfony/css-selector": "^7.3",
         "symfony/dom-crawler": "^7.3",
         "tightenco/ziggy": "^2.5",

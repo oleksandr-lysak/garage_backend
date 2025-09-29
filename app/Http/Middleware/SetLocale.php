@@ -15,12 +15,20 @@ class SetLocale
      */
     public function handle($request, Closure $next)
     {
+        // For SEO, always set Ukrainian locale for public routes
+        if (!$request->is('admin/*') && !$request->is('api/*')) {
+            App::setLocale('uk');
+            session(['locale' => 'uk']);
+            return $next($request);
+        }
+
+        // For admin and API routes, allow locale switching
         $localeHeader = $request->header('locale');
         $acceptLang   = $request->header('accept-language');
         $queryParam   = $request->get('locale');
 
         // Extract first locale from Accept-Language if present, e.g. "uk-UA,uk;q=0.9"
-        if ($acceptLang && ! $localeHeader) {
+        if ($acceptLang && !$localeHeader) {
             // split by comma and take the first part before possible ';'
             $parts = explode(',', $acceptLang);
             $primary = isset($parts[0]) ? trim($parts[0]) : '';
@@ -32,6 +40,7 @@ class SetLocale
         $locale = $localeHeader ?? $queryParam ?? $sessionLocale ?? config('app.locale', 'uk');
 
         App::setLocale($locale);
+        session(['locale' => $locale]);
 
         return $next($request);
     }
