@@ -14,9 +14,9 @@ class GetMasterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'lat' => 'required|numeric',
-            'lng' => 'required|numeric',
-            'zoom' => 'required|numeric',
+            'lat' => 'numeric',
+            'lng' => 'numeric',
+            'zoom' => 'numeric',
             'page' => 'integer|min:1',
             'name' => 'string|nullable',
             'distance' => 'numeric|nullable',

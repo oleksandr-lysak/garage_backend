@@ -6,6 +6,7 @@ use App\Http\Resources\Api\V1\ServiceResource;
 use App\Http\Services\Appointment\AppointmentRedisService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Str;
 
 /**
  * MasterResource Class
@@ -45,6 +46,17 @@ class MasterResource extends JsonResource
     {
         $appointmentRedisService = app(AppointmentRedisService::class);
 
+        $avgRating = $this->reviews_avg_rating !== null
+            ? round((float) $this->reviews_avg_rating, 1)
+            : 0.0;
+
+        $photoUrl = null;
+        if ($this->photo) {
+            $photoUrl = Str::startsWith($this->photo, ['http://', 'https://'])
+                ? (string) $this->photo
+                : url('storage/'.$this->photo);
+        }
+
         return [
             'id' => (int) $this->id,
             'name' => (string) $this->name,
@@ -55,19 +67,21 @@ class MasterResource extends JsonResource
             'age' => (int) $this->age,
             'phone' => $this->phone,
             'reviews_count' => (int) $this->reviews_count,
-            'rating' => (float) round($this->rating, 1),
-            'main_photo' => (string) 'storage/'.$this->photo,
+            'rating' => (float) $avgRating,
+            'main_photo' => $photoUrl,
             'distance' => (float) round($this->distance, 3),
             'main_service_id' => (int) $this->service_id,
             'slug' => (string) $this->slug,
             'services' => ServiceResource::collection($this->services),
             'reviews' => $this->reviews ? $this->reviews->map(function ($review) {
+                $userName = $review->user ? $review->user->name : 'Anonymous';
                 return [
                     'id' => $review->id,
                     'rating' => $review->rating,
                     'review' => $review->review,
                     'created_at' => $review->created_at,
-                    'user' => $review->user ? $review->user->name : 'Anonymous'
+                    'user' => $userName,
+                    'user_name' => $userName
                 ];
             }) : [],
             'available' => $appointmentRedisService->isMasterAvailableAt($this->id, now()),

@@ -39,9 +39,11 @@ class MasterController extends Controller
      */
     public function show(Request $request, string $slug)
     {
-        $master = Master::where('slug', $slug)->firstOrFail();
+        $master = Master::where('slug', $slug)
+            ->withAvg('reviews', 'rating')
+            ->firstOrFail();
         $master->load([
-            'reviews',
+            'reviews.user',
             'services',
         ]);
 

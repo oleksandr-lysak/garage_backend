@@ -291,7 +291,7 @@ const structuredData = computed(() =>
 );
 
 // Methods
-const fetchMasters = async (url = '/api/masters') => {
+const fetchMasters = async (url = '/web-api/masters') => {
     try {
         isLoading.value = true;
 
@@ -321,6 +321,9 @@ const fetchMasters = async (url = '/api/masters') => {
                     case 'maxPrice':
                         paramKey = 'max_price';
                         break;
+                    case 'selectedServices':
+                        paramKey = 'selected_services';
+                        break;
                     case 'available':
                         // ensure boolean-like strings "true"/"false" as used by backend
                         paramValue = String(value);
@@ -328,13 +331,15 @@ const fetchMasters = async (url = '/api/masters') => {
                     case 'distance':
                         if (typeof value === 'string') {
                             const n = parseInt(value, 10);
-                            if (! Number.isNaN(n)) paramValue = n;
+                            if (!Number.isNaN(n)) paramValue = n;
                         }
                         break;
                 }
 
                 if (Array.isArray(value) && value.length > 0) {
-                    value.forEach((v: any) => params.append(paramKey, v.toString()));
+                    value.forEach((v: any) =>
+                        params.append(paramKey, v.toString()),
+                    );
                 } else {
                     params.append(paramKey, paramValue.toString());
                 }
@@ -342,7 +347,19 @@ const fetchMasters = async (url = '/api/masters') => {
         });
 
         const { data } = await axios.get(`${url}?${params.toString()}`);
-        masters.value = data.masters;
+        // Support both Web response shape ({ masters: {...} }) and API v1 shape ({ data: [...], meta: {...} })
+        if (data && data.data.masters) {
+            masters.value = data.data.masters;
+        } else if (data && Array.isArray(data.data)) {
+            masters.value = {
+                data: data.data,
+                current_page: data.meta?.current_page ?? 1,
+                last_page: data.meta?.last_page ?? 1,
+                total: data.meta?.total ?? data.data.length,
+                prev_page_url: null,
+                next_page_url: null,
+            };
+        }
 
         // Update URL without page reload
         updateUrl(params.toString());

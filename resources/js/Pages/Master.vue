@@ -89,7 +89,7 @@
                                         props.master.data.main_photo &&
                                         props.master.data.name
                                     "
-                                    :src="`/${props.master.data.main_photo}`"
+                                    :src="props.master.data.main_photo"
                                     :alt="`Фото майстра ${props.master.data.name}`"
                                     class="h-48 w-48 rounded-full border-4 border-blue-500 object-cover shadow-2xl transition-transform duration-300 hover:scale-105 lg:h-64 lg:w-64 dark:border-green-500"
                                 />
@@ -629,7 +629,8 @@ const props = defineProps({
     master: Object,
 });
 
-const reviews = ref<any[]>([]);
+// Initialize reviews from master data
+const reviews = ref<any[]>(props.master?.data?.reviews || []);
 const newReview = ref({ user_name: '', comment: '', rating: 0 });
 const showReviewForm = ref(false);
 
@@ -712,35 +713,6 @@ function injectStructuredData() {
 
     // Append to head
     document.head.appendChild(script);
-}
-
-async function loadReviews() {
-    if (!props.master?.data?.id) {
-        console.log('Master data not available yet');
-        return;
-    }
-
-    try {
-        const response = await fetch(
-            `/api/reviews/master/${props.master.data.id}`,
-        );
-        if (response.ok) {
-            const result = await response.json();
-            console.log('Reviews API response:', result);
-            if (result.success) {
-                reviews.value = result.reviews;
-                console.log('Loaded reviews:', reviews.value);
-
-                // Log structure of first review for debugging
-                if (result.reviews && result.reviews.length > 0) {
-                    console.log('First review structure:', result.reviews[0]);
-                    console.log('User object:', result.reviews[0].user);
-                }
-            }
-        }
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-    }
 }
 
 async function submitReview() {
@@ -831,17 +803,17 @@ onMounted(() => {
     if (props.master?.data) {
         console.log('Master data:', props.master.data);
         injectStructuredData();
-
-        // Load reviews from backend
-        loadReviews();
     }
 });
 
-// Watch for master data changes to update structured data
+// Watch for master data changes
 watch(
     () => props.master?.data,
-    () => {
-        injectStructuredData();
+    (newData) => {
+        if (newData) {
+            injectStructuredData();
+            reviews.value = newData.reviews || [];
+        }
     },
     { deep: true },
 );

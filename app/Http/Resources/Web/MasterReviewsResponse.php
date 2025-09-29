@@ -10,7 +10,9 @@ class MasterReviewsResponse extends JsonResource
     {
         return [
             'success' => $this->resource['success'] ?? false,
-            'reviews' => ReviewResource::collection($this->resource['reviews'] ?? []),
+            'reviews' => ReviewResource::collection($this->resource['reviews'] ?? [])
+                ->collection
+                ->toArray($request),
             'total' => $this->resource['total'] ?? 0,
         ];
     }

@@ -30,7 +30,8 @@
             "sort_price": "Price",
             "sort_distance": "Distance",
             "sort_name": "Name",
-            "sort_age": "Age"
+            "sort_age": "Age",
+            "available": "Availability"
         },
 
         "search": {

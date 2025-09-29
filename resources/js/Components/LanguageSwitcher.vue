@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -15,7 +15,7 @@ const { locale } = useI18n();
 const selectedLang = ref(locale.value);
 
 function changeLang() {
-    Inertia.get(
+    router.get(
         window.location.pathname,
         {},
         {

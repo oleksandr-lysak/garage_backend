@@ -17,9 +17,14 @@ class MasterListResponse extends JsonResource
         /** @var LengthAwarePaginator $paginator */
         $paginator = $this->resource;
 
+        // Transform the paginator items into a plain array to avoid nested `data` wrappers
+        $items = $paginator->getCollection()
+            ->map(fn ($master) => (new MasterResource($master))->toArray($request))
+            ->all();
+
         return [
             'masters' => [
-                'data' => MasterResource::collection($paginator->getCollection()),
+                'data' => $items,
                 'current_page' => $paginator->currentPage(),
                 'last_page' => $paginator->lastPage(),
                 'total' => $paginator->total(),

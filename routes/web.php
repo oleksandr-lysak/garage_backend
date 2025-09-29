@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\AuthController as ApiAuthController;
 use App\Http\Controllers\Web\MasterController;
 use App\Http\Controllers\Web\ReviewController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,9 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->name('dashboard');
 
+// Public OTP login route (no auth) at /login
+Route::get('/login', function () { return Inertia::render('Admin/Auth/Login'); })->name('login');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -37,5 +41,8 @@ Route::get('/locale/{locale}', function ($locale) {
 
     return back();
 });
+
+// Include admin routes
+require __DIR__.'/admin.php';
 
 require __DIR__.'/auth.php';

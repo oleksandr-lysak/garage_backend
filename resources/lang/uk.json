@@ -30,7 +30,8 @@
             "sort_price": "Ціною",
             "sort_distance": "Відстанню",
             "sort_name": "Ім'ям",
-            "sort_age": "Віком"
+            "sort_age": "Віком",
+            "available": "Доступність"
         },
 
         "search": {

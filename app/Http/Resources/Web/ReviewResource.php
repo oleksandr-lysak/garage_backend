@@ -13,6 +13,16 @@ class ReviewResource extends JsonResource
             'comment' => $this->review,
             'rating' => $this->rating,
             'master_id' => $this->master_id,
+            'created_at' => $this->created_at,
+            'user' => $this->whenLoaded('user', function () {
+                return [
+                    'id' => $this->user->id,
+                    'name' => $this->user->name,
+                    'phone' => $this->user->phone,
+                ];
+            }),
+            // backward compatibility if UI checks user_name
+            'user_name' => $this->whenLoaded('user', fn () => $this->user->name),
         ];
     }
 }

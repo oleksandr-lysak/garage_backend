@@ -26,11 +26,16 @@ readonly class MasterFetcher
             'available' => $validated['available'] ?? null,
         ];
 
+        //Kyiv coordinates by default
+        $lat = $validated['lat'] ?? 50.4501;
+        $lng = $validated['lng'] ?? 30.5234;
+        $zoom = $validated['zoom'] ?? 12;
+
         $masters = $this->masterService->getMastersOnDistance(
             $page,
-            $validated['lat'],
-            $validated['lng'],
-            $validated['zoom'],
+            $lat,
+            $lng,
+            $zoom,
             $filters
         );
 

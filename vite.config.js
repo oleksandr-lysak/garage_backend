@@ -5,12 +5,22 @@ import vue from '@vitejs/plugin-vue';
 export default defineConfig(({ mode }) => {
     process.env.NODE_ENV = mode;
 
+    const isProd = mode === 'production';
 
     return {
-        base: '/build/',
+        base: isProd ? '/build/' : '/',
         server: {
             https: false,
-            host: true,
+            host: '127.0.0.1',
+            port: 5173,
+            strictPort: true,
+            cors: true,
+            hmr: {
+                host: '127.0.0.1',
+                port: 5173,
+                protocol: 'ws',
+                clientPort: 5173,
+            },
         },
         plugins: [
             laravel({
