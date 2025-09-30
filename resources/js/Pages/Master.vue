@@ -64,8 +64,16 @@
                 <meta property="og:image" :content="metaTags.ogImage" />
                 <meta property="og:locale" content="uk_UA" />
                 <meta property="og:site_name" :content="metaTags.ogSiteName" />
-                <meta v-if="metaTags.rating" property="og:rating" :content="metaTags.rating" />
-                <meta v-if="metaTags.reviewCount" property="og:review:count" :content="metaTags.reviewCount" />
+                <meta
+                    v-if="metaTags.rating"
+                    property="og:rating"
+                    :content="metaTags.rating"
+                />
+                <meta
+                    v-if="metaTags.reviewCount"
+                    property="og:review:count"
+                    :content="metaTags.reviewCount"
+                />
 
                 <!-- Twitter Card -->
                 <meta name="twitter:card" :content="metaTags.twitterCard" />
@@ -133,7 +141,11 @@
                                                 ? 'fa-check'
                                                 : 'fa-times',
                                         ]"
-                                        :aria-label="props.master.data.available ? $t('common.available') : $t('common.not_available')"
+                                        :aria-label="
+                                            props.master.data.available
+                                                ? $t('common.available')
+                                                : $t('common.not_available')
+                                        "
                                         role="img"
                                     ></i>
                                 </div>
@@ -141,12 +153,18 @@
                         </div>
 
                         <!-- Master Info -->
-                        <div class="h-card space-y-6 text-center lg:col-span-2 lg:text-left">
+                        <div
+                            class="h-card space-y-6 text-center lg:col-span-2 lg:text-left"
+                        >
                             <div>
-                                <h1 class="mb-4 text-4xl font-bold text-gray-900 lg:text-5xl dark:text-white p-name">
+                                <h1
+                                    class="p-name mb-4 text-4xl font-bold text-gray-900 lg:text-5xl dark:text-white"
+                                >
                                     {{ props.master.data.name }}
                                 </h1>
-                                <p class="text-lg leading-relaxed text-gray-600 dark:text-gray-400 p-note">
+                                <p
+                                    class="p-note text-lg leading-relaxed text-gray-600 dark:text-gray-400"
+                                >
                                     {{ props.master.data.description }}
                                 </p>
                             </div>
@@ -154,7 +172,9 @@
                             <!-- Quick Stats -->
                             <div class="grid grid-cols-2 gap-4 lg:grid-cols-4">
                                 <div class="text-center">
-                                    <div class="text-2xl font-bold text-blue-600 dark:text-blue-400 p-rating">
+                                    <div
+                                        class="p-rating text-2xl font-bold text-blue-600 dark:text-blue-400"
+                                    >
                                         {{ props.master.data.rating }}
                                     </div>
                                     <div
@@ -184,7 +204,14 @@
                                                             .rating,
                                                     ),
                                             }"
-                                            :aria-label="i <= Math.round(props.master.data.rating) ? $t('common.star_filled') : $t('common.star_empty')"
+                                            :aria-label="
+                                                i <=
+                                                Math.round(
+                                                    props.master.data.rating,
+                                                )
+                                                    ? $t('common.star_filled')
+                                                    : $t('common.star_empty')
+                                            "
                                             role="img"
                                         ></i>
                                     </div>
@@ -218,15 +245,33 @@
                             </div>
 
                             <!-- Contact Info -->
-                            <div class="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start">
-                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                                    <i class="fa fa-location-dot text-blue-500" :aria-label="$t('common.location_icon')" role="img"></i>
-                                    <span class="p-street-address">{{ props.master.data.address }}</span>
+                            <div
+                                class="flex flex-col justify-center gap-4 sm:flex-row lg:justify-start"
+                            >
+                                <div
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+                                >
+                                    <i
+                                        class="fa fa-location-dot text-blue-500"
+                                        :aria-label="$t('common.location_icon')"
+                                        role="img"
+                                    ></i>
+                                    <span class="p-street-address">{{
+                                        props.master.data.address
+                                    }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                                    <i class="fa fa-phone text-green-500" :aria-label="$t('common.phone_icon')" role="img"></i>
-                                    <a :href="`tel:${props.master.data.phone}`"
-                                        class="p-tel transition-colors hover:text-blue-600 dark:hover:text-blue-400">
+                                <div
+                                    class="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+                                >
+                                    <i
+                                        class="fa fa-phone text-green-500"
+                                        :aria-label="$t('common.phone_icon')"
+                                        role="img"
+                                    ></i>
+                                    <a
+                                        :href="`tel:${props.master.data.phone}`"
+                                        class="p-tel transition-colors hover:text-blue-600 dark:hover:text-blue-400"
+                                    >
                                         {{ props.master.data.phone }}
                                     </a>
                                 </div>
@@ -260,7 +305,9 @@
                                 >
                                     <i
                                         class="fa fa-wrench text-xl text-white"
-                                        :aria-label="$t('masters.services.icon')"
+                                        :aria-label="
+                                            $t('masters.services.icon')
+                                        "
                                         role="img"
                                     ></i>
                                 </div>
@@ -293,7 +340,8 @@
                         <h2
                             class="flex items-center gap-3 text-3xl font-bold text-gray-900 dark:text-white"
                         >
-                            <i class="fa fa-star text-yellow-500"
+                            <i
+                                class="fa fa-star text-yellow-500"
                                 :aria-label="$t('masters.reviews.icon')"
                                 role="img"
                             ></i>
@@ -309,7 +357,8 @@
                             @click="showReviewForm = !showReviewForm"
                             class="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-medium text-white transition-colors duration-200 hover:bg-blue-700"
                         >
-                            <i class="fa fa-plus"
+                            <i
+                                class="fa fa-plus"
                                 :aria-label="$t('masters.reviews.add_icon')"
                                 role="img"
                             ></i>
@@ -455,7 +504,15 @@
                                                     'text-gray-300 dark:text-gray-500':
                                                         i > review.rating,
                                                 }"
-                                                :aria-label="i <= review.rating ? $t('common.star_filled') : $t('common.star_empty')"
+                                                :aria-label="
+                                                    i <= review.rating
+                                                        ? $t(
+                                                              'common.star_filled',
+                                                          )
+                                                        : $t(
+                                                              'common.star_empty',
+                                                          )
+                                                "
                                                 role="img"
                                             ></i>
                                         </div>
@@ -516,7 +573,9 @@
                                 >
                                     <i
                                         class="fa fa-phone text-xl text-white"
-                                        :aria-label="$t('masters.contact.phone_icon')"
+                                        :aria-label="
+                                            $t('masters.contact.phone_icon')
+                                        "
                                         role="img"
                                     ></i>
                                 </div>
@@ -541,7 +600,9 @@
                                 >
                                     <i
                                         class="fa fa-location-dot text-xl text-white"
-                                        :aria-label="$t('masters.contact.location_icon')"
+                                        :aria-label="
+                                            $t('masters.contact.location_icon')
+                                        "
                                         role="img"
                                     ></i>
                                 </div>
@@ -563,7 +624,9 @@
                                 >
                                     <i
                                         class="fa fa-clock text-xl text-white"
-                                        :aria-label="$t('masters.contact.time_icon')"
+                                        :aria-label="
+                                            $t('masters.contact.time_icon')
+                                        "
                                         role="img"
                                     ></i>
                                 </div>
@@ -644,11 +707,14 @@ const metaTags = computed(() => {
     if (!props.master?.data) return {};
 
     const masterData = props.master.data;
-    const services = masterData.services?.map((s: any) => s.name).join(', ') || '';
+    const services =
+        masterData.services?.map((s: any) => s.name).join(', ') || '';
     const city = masterData.address?.split(',')[0] || '';
     const rating = masterData.rating ? `${masterData.rating}/5` : '';
     const ratingText = rating ? ` | Рейтинг ${rating}` : '';
-    const reviewsText = masterData.reviews_count ? ` | ${masterData.reviews_count} відгуків` : '';
+    const reviewsText = masterData.reviews_count
+        ? ` | ${masterData.reviews_count} відгуків`
+        : '';
 
     return {
         title: `${masterData.name} - ${services} у ${city}${ratingText}${reviewsText}`,
@@ -696,48 +762,65 @@ const structuredData = computed(() => {
             '@type': 'PostalAddress',
             addressLocality: city,
             addressCountry: 'UA',
-            streetAddress: masterData.address
+            streetAddress: masterData.address,
         },
         geo: {
             '@type': 'GeoCoordinates',
             latitude: masterData.latitude,
-            longitude: masterData.longitude
+            longitude: masterData.longitude,
         },
-        aggregateRating: masterData.rating ? {
-            '@type': 'AggregateRating',
-            ratingValue: masterData.rating,
-            reviewCount: masterData.reviews_count,
-            bestRating: '5',
-            worstRating: '0'
-        } : undefined,
-        review: masterData.reviews?.map((review: { rating: number; user_name?: string; user?: string; review: string; created_at: string }) => ({
-            '@type': 'Review',
-            reviewRating: {
-                '@type': 'Rating',
-                ratingValue: review.rating
-            },
-            author: {
-                '@type': 'Person',
-                name: review.user_name || review.user || 'Anonymous'
-            },
-            reviewBody: review.review,
-            datePublished: review.created_at
-        })),
+        aggregateRating: masterData.rating
+            ? {
+                  '@type': 'AggregateRating',
+                  ratingValue: masterData.rating,
+                  reviewCount: masterData.reviews_count,
+                  bestRating: '5',
+                  worstRating: '0',
+              }
+            : undefined,
+        review: masterData.reviews?.map(
+            (review: {
+                rating: number;
+                user_name?: string;
+                user?: string;
+                review: string;
+                created_at: string;
+            }) => ({
+                '@type': 'Review',
+                reviewRating: {
+                    '@type': 'Rating',
+                    ratingValue: review.rating,
+                },
+                author: {
+                    '@type': 'Person',
+                    name: review.user_name || review.user || 'Anonymous',
+                },
+                reviewBody: review.review,
+                datePublished: review.created_at,
+            }),
+        ),
         makesOffer: services.map((service: string) => ({
             '@type': 'Offer',
             itemOffered: {
                 '@type': 'Service',
-                name: service
-            }
+                name: service,
+            },
         })),
         openingHoursSpecification: {
             '@type': 'OpeningHoursSpecification',
-            dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            dayOfWeek: [
+                'Monday',
+                'Tuesday',
+                'Wednesday',
+                'Thursday',
+                'Friday',
+                'Saturday',
+            ],
             opens: '09:00',
-            closes: '18:00'
+            closes: '18:00',
         },
         priceRange: '₴₴',
-        currenciesAccepted: 'UAH'
+        currenciesAccepted: 'UAH',
     });
 });
 

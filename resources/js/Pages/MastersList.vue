@@ -163,14 +163,30 @@
         </main>
 
         <footer class="border-t border-gray-200 bg-white py-6">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-                <p class="text-sm text-gray-500">© {{ new Date().getFullYear() }} Carbeat</p>
+            <div
+                class="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8"
+            >
+                <p class="text-sm text-gray-500">
+                    © {{ new Date().getFullYear() }} Carbeat
+                </p>
                 <nav class="flex items-center gap-4 text-sm">
-                    <a :href="route('privacy')" class="text-gray-600 hover:text-gray-900">Політика конфіденційності</a>
+                    <a
+                        :href="route('privacy')"
+                        class="text-gray-600 hover:text-gray-900"
+                        >Політика конфіденційності</a
+                    >
                     <span class="text-gray-300">·</span>
-                    <a :href="route('terms')" class="text-gray-600 hover:text-gray-900">Умови користування</a>
+                    <a
+                        :href="route('terms')"
+                        class="text-gray-600 hover:text-gray-900"
+                        >Умови користування</a
+                    >
                     <span class="text-gray-300">·</span>
-                    <a :href="route('data_deletion')" class="text-gray-600 hover:text-gray-900">Видалення даних</a>
+                    <a
+                        :href="route('data_deletion')"
+                        class="text-gray-600 hover:text-gray-900"
+                        >Видалення даних</a
+                    >
                 </nav>
             </div>
         </footer>
