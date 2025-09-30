@@ -14,7 +14,15 @@ class MasterFilterService
         }
 
         if (! empty($filters['service_id'])) {
-            $whereClauses[] = 'masters.service_id = :service_id';
+            // Match masters that have this service either as main (masters.service_id)
+            // or via the pivot table master_services
+            $whereClauses[] = '(
+                masters.service_id = :service_id
+                OR EXISTS (
+                    SELECT 1 FROM master_services ms
+                    WHERE ms.master_id = masters.id AND ms.service_id = :service_id
+                )
+            )';
             $queryParams['service_id'] = $filters['service_id'];
         }
 
