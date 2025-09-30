@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Artisan;
 Route::get('/', [MasterController::class, 'index'])->name('welcome');
 Route::get('/masters', [MasterController::class, 'index'])->name('masters.index');
 Route::get('/masters/{slug}', [MasterController::class, 'show'])->name('masters.show');
+Route::get('/privacy', function () { return Inertia::render('Privacy'); })->name('privacy');
+Route::get('/terms', function () { return Inertia::render('Terms'); })->name('terms');
+Route::get('/data-deletion', function () { return Inertia::render('DataDeletion'); })->name('data_deletion');
 
 // API routes for masters
 Route::prefix('web-api')->middleware('api')->group(function () {
