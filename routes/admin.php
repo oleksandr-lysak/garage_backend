@@ -30,6 +30,9 @@ Route::group(['prefix' => 'admin-api', 'middleware' => ['auth', 'api']], functio
     Route::put('/reviews/{reviewId}', [\App\Http\Controllers\Admin\MasterController::class, 'updateReview'])->name('admin.api.reviews.update');
     Route::delete('/reviews/{reviewId}', [\App\Http\Controllers\Admin\MasterController::class, 'deleteReview'])->name('admin.api.reviews.delete');
 
+    // Users (needed by admin master edit page)
+    Route::get('/users', [\App\Http\Controllers\Admin\UserController::class, 'index'])->name('admin.api.users.index');
+
     // Services management (admin)
     Route::get('/admin-services', [\App\Http\Controllers\Admin\ServiceController::class, 'list'])->name('admin.api.admin_services.list');
     Route::get('/admin-services/{id}', [\App\Http\Controllers\Admin\ServiceController::class, 'get'])->name('admin.api.admin_services.get');
