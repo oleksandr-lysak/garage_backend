@@ -41,4 +41,18 @@ class ServiceController extends Controller
         $summary = $this->service->deleteServiceAndCascade($id);
         return response()->json(new AdminServiceDeleteResponse($summary));
     }
+
+    public function bulkDeletePreview(Request $request): JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        $preview = $this->service->getBulkDeletePreview($ids);
+        return response()->json(new AdminServiceDeletePreviewResource($preview));
+    }
+
+    public function bulkDestroy(AdminServiceDeleteRequest $request): JsonResponse
+    {
+        $ids = $request->input('ids', []);
+        $summary = $this->service->deleteServicesAndCascade($ids);
+        return response()->json(new AdminServiceDeleteResponse($summary));
+    }
 }

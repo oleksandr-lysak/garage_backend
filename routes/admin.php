@@ -33,6 +33,8 @@ Route::group(['prefix' => 'admin-api', 'middleware' => ['auth', 'api']], functio
     Route::get('/admin-services', [\App\Http\Controllers\Admin\ServiceController::class, 'list'])->name('admin.api.admin_services.list');
     Route::get('/admin-services/{id}/delete-preview', [\App\Http\Controllers\Admin\ServiceController::class, 'deletePreview'])->name('admin.api.admin_services.delete_preview');
     Route::delete('/admin-services/{id}', [\App\Http\Controllers\Admin\ServiceController::class, 'destroy'])->name('admin.api.admin_services.destroy');
+    Route::post('/admin-services/bulk/delete-preview', [\App\Http\Controllers\Admin\ServiceController::class, 'bulkDeletePreview'])->name('admin.api.admin_services.bulk_delete_preview');
+    Route::post('/admin-services/bulk/delete', [\App\Http\Controllers\Admin\ServiceController::class, 'bulkDestroy'])->name('admin.api.admin_services.bulk_delete');
 });
 
 // Admin OTP auth routes (session login)

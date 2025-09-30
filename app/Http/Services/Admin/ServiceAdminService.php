@@ -70,6 +70,68 @@ class ServiceAdminService
         ];
     }
 
+    public function getBulkDeletePreview(array $serviceIds): array
+    {
+        $serviceIds = array_values(array_unique(array_map('intval', $serviceIds)));
+        if (empty($serviceIds)) {
+            return [
+                'services' => [],
+                'affected_masters_count' => 0,
+                'masters_to_delete' => [],
+            ];
+        }
+
+        $services = Service::whereIn('id', $serviceIds)->get(['id', 'name'])
+            ->map(fn ($s) => ['id' => (int) $s->id, 'name' => (string) $s->name])->values();
+
+        // Distinct masters that have any of these services
+        $affectedMasters = DB::table('master_services')
+            ->whereIn('service_id', $serviceIds)
+            ->distinct()
+            ->pluck('master_id');
+
+        if ($affectedMasters->isEmpty()) {
+            return [
+                'services' => $services,
+                'affected_masters_count' => 0,
+                'masters_to_delete' => [],
+            ];
+        }
+
+        // Total service count per affected master
+        $totalCounts = DB::table('master_services')
+            ->select('master_id', DB::raw('COUNT(*) as total'))
+            ->whereIn('master_id', $affectedMasters)
+            ->groupBy('master_id')
+            ->pluck('total', 'master_id');
+
+        // Count of services to be removed per affected master
+        $toRemoveCounts = DB::table('master_services')
+            ->select('master_id', DB::raw('COUNT(*) as cnt'))
+            ->whereIn('service_id', $serviceIds)
+            ->whereIn('master_id', $affectedMasters)
+            ->groupBy('master_id')
+            ->pluck('cnt', 'master_id');
+
+        $mastersToDeleteIds = [];
+        foreach ($affectedMasters as $masterId) {
+            $total = (int) ($totalCounts[$masterId] ?? 0);
+            $remove = (int) ($toRemoveCounts[$masterId] ?? 0);
+            if ($total > 0 && $total === $remove) {
+                $mastersToDeleteIds[] = (int) $masterId;
+            }
+        }
+
+        $mastersToDelete = Master::whereIn('id', $mastersToDeleteIds)->get(['id', 'name'])
+            ->map(fn ($m) => ['id' => (int) $m->id, 'name' => (string) $m->name])->values();
+
+        return [
+            'services' => $services,
+            'affected_masters_count' => (int) $affectedMasters->count(),
+            'masters_to_delete' => $mastersToDelete,
+        ];
+    }
+
     public function deleteServiceAndCascade(int $serviceId): array
     {
         return DB::transaction(function () use ($serviceId) {
@@ -105,6 +167,47 @@ class ServiceAdminService
 
             return [
                 'deleted_service_id' => (int) $serviceId,
+                'detached_from_masters' => (int) $preview['affected_masters_count'],
+                'deleted_masters' => count($masterIdsToDelete),
+            ];
+        });
+    }
+
+    public function deleteServicesAndCascade(array $serviceIds): array
+    {
+        $serviceIds = array_values(array_unique(array_map('intval', $serviceIds)));
+        return DB::transaction(function () use ($serviceIds) {
+            $preview = $this->getBulkDeletePreview($serviceIds);
+
+            // Masters to delete
+            $masterIdsToDelete = collect($preview['masters_to_delete'])->pluck('id')->all();
+            if (! empty($masterIdsToDelete)) {
+                $masters = Master::with(['services', 'reviews'])->whereIn('id', $masterIdsToDelete)->get();
+                foreach ($masters as $master) {
+                    if (method_exists($master, 'reviews')) {
+                        $master->reviews()->delete();
+                    }
+                    if (method_exists($master, 'appointments')) {
+                        $master->appointments()->delete();
+                    }
+                    if (method_exists($master, 'galleryPhotos')) {
+                        $master->galleryPhotos()->delete();
+                    }
+                    if (method_exists($master, 'services')) {
+                        $master->services()->detach();
+                    }
+                    $master->delete();
+                }
+            }
+
+            // Detach and delete services
+            if (! empty($serviceIds)) {
+                DB::table('master_services')->whereIn('service_id', $serviceIds)->delete();
+                Service::whereIn('id', $serviceIds)->delete();
+            }
+
+            return [
+                'deleted_service_ids' => $serviceIds,
                 'detached_from_masters' => (int) $preview['affected_masters_count'],
                 'deleted_masters' => count($masterIdsToDelete),
             ];
