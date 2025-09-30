@@ -205,19 +205,6 @@
 
                                 <div class="text-center">
                                     <div
-                                        class="text-2xl font-bold text-purple-600 dark:text-purple-400"
-                                    >
-                                        {{ props.master.data.age }}
-                                    </div>
-                                    <div
-                                        class="text-sm text-gray-600 dark:text-gray-400"
-                                    >
-                                        {{ $t('common.age') }}
-                                    </div>
-                                </div>
-
-                                <div class="text-center">
-                                    <div
                                         class="text-2xl font-bold text-orange-600 dark:text-orange-400"
                                     >
                                         {{ props.master.data.services.length }}

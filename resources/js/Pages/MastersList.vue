@@ -24,11 +24,6 @@
             <meta name="twitter:image" :content="metaTags.ogImage" />
         </Head>
 
-        <!-- Breadcrumbs (positioned absolutely, not taking space) -->
-        <div class="absolute left-4 top-4 z-10">
-            <Breadcrumbs :items="breadcrumbItems" />
-        </div>
-
         <!-- Main Content -->
         <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
             <!-- Page Title and Description -->
@@ -134,11 +129,10 @@
                     :image-url="master.main_photo"
                     :name="master.name"
                     :address="master.address"
-                    :rating="master.rating"
+                    :rating="getRating(master)"
                     :description="master.description"
                     :phone="master.phone"
                     :slug="master.slug"
-                    :age="master.age"
                     :available="master.available"
                     :experience="5"
                     :reviews-count="master.reviews_count"
@@ -177,7 +171,6 @@ import { computed, onMounted, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // Components
-import Breadcrumbs from '@/Components/Breadcrumbs.vue';
 import MasterCard from '@/Components/MasterCard.vue';
 import MastersFilters from '@/Components/MastersFilters.vue';
 import MastersMap from '@/Components/MastersMap.vue';
@@ -186,7 +179,6 @@ import ViewToggle from '@/Components/ViewToggle.vue';
 
 // SEO Configuration
 import {
-    generateBreadcrumbData,
     generateMetaTags,
     generateStructuredData,
     getSEOConfig,
@@ -198,9 +190,6 @@ const page = usePage();
 // SEO Configuration
 const seoConfig = getSEOConfig('auto_mechanics'); // Can be changed based on environment
 const metaTags = computed(() => generateMetaTags(seoConfig, locale.value));
-const breadcrumbItems = computed(() =>
-    generateBreadcrumbData(seoConfig, locale.value),
-);
 
 // State
 interface Master {
@@ -208,7 +197,6 @@ interface Master {
     name: string;
     description: string;
     address: string;
-    age: number;
     phone: string;
     reviews_count: number;
     rating: number;
@@ -223,6 +211,7 @@ interface Master {
     approved: boolean;
     latitude?: number;
     longitude?: number;
+    reviews_avg_rating?: number; // Added for fallback rating
 }
 
 const masters = ref<{
@@ -414,6 +403,11 @@ const clearAllFilters = () => {
 const applyPopularSearch = (search: string) => {
     filters.value.search = search;
     fetchMasters();
+};
+
+const getRating = (master: Master) => {
+    const val = Number(master.reviews_avg_rating ?? 0);
+    return Math.round(val * 10) / 10;
 };
 
 // Lifecycle

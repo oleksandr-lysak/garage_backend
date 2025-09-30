@@ -23,6 +23,15 @@ class RatelistImportService
     ) {}
 
     /**
+     * Public wrapper to get detail links for progress estimation.
+     * @return array<int,string>
+     */
+    public function getDetailLinks(string $listUrl): array
+    {
+        return $this->extractDetailLinks($listUrl);
+    }
+
+    /**
      * Import masters from a RateList rating page.
      *
      * @param int $serviceId Service id to assign (0 to auto-detect per item)
@@ -46,14 +55,26 @@ class RatelistImportService
                 $dto = $this->scrapeDetail($detailUrl);
                 if (empty($dto['phone'])) {
                     $skipped++;
-                    if ($onProgress) { $onProgress(['imported' => $imported, 'skipped' => $skipped, 'processed' => $imported + $skipped]); }
+                    if ($onProgress) {
+                        $onProgress([
+                            'imported' => $imported,
+                            'skipped' => $skipped,
+                            'processed' => $imported + $skipped
+                        ]);
+                    }
                     continue;
                 }
                 // Coordinates are required by DB schema; skip if missing
                 if (empty($dto['lat']) || empty($dto['lng'])) {
                     $skipped++;
                     Log::warning('Ratelist import: missing coordinates', ['url' => $detailUrl]);
-                    if ($onProgress) { $onProgress(['imported' => $imported, 'skipped' => $skipped, 'processed' => $imported + $skipped]); }
+                    if ($onProgress) {
+                        $onProgress([
+                            'imported' => $imported,
+                            'skipped' => $skipped,
+                            'processed' => $imported + $skipped
+                        ]);
+                    }
                     continue;
                 }
 
@@ -61,13 +82,14 @@ class RatelistImportService
                 $dto['phone'] = app(PhoneHelper::class)->normalize($dto['phone']);
                 // Prepare Service models for scraped services (create if not exists)
                 $serviceModels = [];
+                $seenNormalized = [];
                 if (! empty($dto['services'])) {
                     foreach ($dto['services'] as $serviceName) {
-                        $serviceName = str_replace('Київ', '', $serviceName);
-                        $serviceName = trim($serviceName);
-                        if ($serviceName === '') { continue; }
-                        $serviceModels[] = Service::firstOrCreate(['name' => $serviceName], ['name' => $serviceName]);
-
+                        $normalized = $this->normalizeServiceName($serviceName);
+                        if ($normalized === '') { continue; }
+                        if (isset($seenNormalized[$normalized])) { continue; }
+                        $seenNormalized[$normalized] = true;
+                        $serviceModels[] = Service::firstOrCreate(['name' => $normalized], ['name' => $normalized]);
                     }
                 }
                 // Determine primary service id: user-provided or first scraped service, fallback to 1
@@ -90,36 +112,71 @@ class RatelistImportService
                 ];
 
                 DB::beginTransaction();
-                $master = $this->masterService->importFromExternal($detectedServiceId, $payload, $this->clientService);
-                // Attach services via pivot
-                if (! empty($serviceModels)) {
-                    $ids = array_map(fn($s) => $s->id, $serviceModels);
-                    $master->services()->syncWithoutDetaching($ids);
-                }
-                // Save gallery photos if any
-                if (! empty($dto['gallery'])) {
-                    foreach ($dto['gallery'] as $imgUrl) {
-                        $base64 = $this->photoHelper->downloadAndConvertToBase64($imgUrl);
-                        if ($base64) {
-                            $stored = $this->photoHelper->saveBase64($base64);
-                            if ($stored) {
-                                MasterGallery::firstOrCreate([
-                                    'master_id' => $master->id,
-                                    'photo' => $stored,
-                                ], [
-                                    'master_id' => $master->id,
-                                    'photo' => $stored,
-                                ]);
+                try {
+                    $master = $this->masterService->importFromExternal($detectedServiceId, $payload, $this->clientService);
+                    // Attach services via pivot
+                    if (! empty($serviceModels)) {
+                        $ids = array_map(fn($s) => $s->id, $serviceModels);
+                        $master->services()->syncWithoutDetaching($ids);
+                    }
+                    // Save gallery photos if any
+                    if (! empty($dto['gallery'])) {
+                        foreach ($dto['gallery'] as $imgUrl) {
+                            $base64 = $this->photoHelper->downloadAndConvertToBase64($imgUrl);
+                            if ($base64) {
+                                $stored = $this->photoHelper->saveBase64($base64);
+                                if ($stored) {
+                                    MasterGallery::firstOrCreate([
+                                        'master_id' => $master->id,
+                                        'photo' => $stored,
+                                    ], [
+                                        'master_id' => $master->id,
+                                        'photo' => $stored,
+                                    ]);
+                                }
                             }
                         }
                     }
-                }
-                DB::commit();
-                $imported++;
+                    DB::commit();
+                    $imported++;
 
-                if ($onProgress) { $onProgress(['imported' => $imported, 'skipped' => $skipped, 'processed' => $imported + $skipped]); }
+                    if ($onProgress) {
+                        $onProgress([
+                            'imported' => $imported,
+                            'skipped' => $skipped,
+                            'processed' => $imported + $skipped
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    Log::error('Failed to import master', [
+                        'url' => $detailUrl,
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
+                    $skipped++;
+                    if ($onProgress) {
+                        $onProgress([
+                            'imported' => $imported,
+                            'skipped' => $skipped,
+                            'processed' => $imported + $skipped
+                        ]);
+                    }
+                }
             } catch (\Throwable $e) {
-                //dd($e);
+                Log::error('Failed to scrape master', [
+                    'url' => $detailUrl,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                $skipped++;
+                if ($onProgress) {
+                    $onProgress([
+                        'imported' => $imported,
+                        'skipped' => $skipped,
+                        'processed' => $imported + $skipped
+                    ]);
+                }
             }
         }
 
@@ -375,5 +432,49 @@ class RatelistImportService
             }
         });
         return $data;
+    }
+
+    /**
+     * Remove Ukrainian city names occurrences from service name and normalize spaces.
+     */
+    private function normalizeServiceName(string $raw): string
+    {
+        $name = trim($raw);
+        if ($name === '') { return ''; }
+
+        $cities = [
+            'Київ','Киев','Києві','Киеве',
+            'Львів','Львове',
+            'Одеса','Одесі','Одесса','Одессе',
+            'Дніпро','Дніпрі','Днепр','Днепре',
+            'Харків','Харкові','Харьков','Харькове',
+            'Вінниця','Вінниці','Винница','Виннице',
+            'Житомир','Житомирі',
+            'Запоріжжя','Запоріжжі','Запорожье','Запорожье',
+            'Івано-Франківськ','Івано-Франківську','Ивано-Франковск','Ивано-Франковске',
+            'Кропивницький','Кропивницькому','Кропивницкий','Кропивницком',
+            'Луцьк','Луцьку',
+            'Полтава','Полтаві',
+            'Тернопіль','Тернополі',
+            'Ужгород','Ужгороді',
+            'Чернівці','Чернівцях','Черновцы','Черновцах',
+            'Черкаси','Черкасах',
+            'Чернігів','Чернігові','Чернигов','Чернигове',
+            'Хмельницький','Хмельницькому','Хмельницкий','Хмельницком',
+            'Суми','Сумах',
+            'Рівне','Рівному','Ровно','Ровном',
+        ];
+
+        // Remove city tokens case-insensitively
+        foreach ($cities as $city) {
+            $name = preg_replace('/\b' . preg_quote($city, '/') . '\b/ui', '', $name);
+        }
+
+        // Remove extra delimiters and prepositions around removed cities
+        $name = preg_replace('/\s{2,}/u', ' ', $name);
+        $name = preg_replace('/\s*,\s*/u', ', ', $name);
+        $name = trim($name, " \t\n\r\0\x0B-,");
+
+        return trim($name);
     }
 }

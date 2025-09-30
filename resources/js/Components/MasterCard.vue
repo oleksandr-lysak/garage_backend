@@ -49,12 +49,12 @@
                     >
                 </div>
 
-                <!-- Experience Badge -->
+                <!-- Experience Badge
                 <div
                     class="absolute bottom-3 right-3 rounded-lg bg-blue-500/90 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm"
                 >
                     {{ experience }} {{ $t('common.years') }}
-                </div>
+                </div> -->
             </div>
 
             <!-- Master Info -->
@@ -118,15 +118,6 @@
                             <span class="font-mono">{{
                                 formatPhone(phone)
                             }}</span>
-                        </div>
-
-                        <div
-                            class="flex items-center text-sm text-gray-600 dark:text-gray-400"
-                        >
-                            <i
-                                class="fa fa-calendar-alt mr-2 w-4 text-purple-500"
-                            ></i>
-                            <span>{{ age }} {{ $t('common.years') }}</span>
                         </div>
                     </div>
                 </div>
@@ -220,7 +211,6 @@ interface Props {
     address: string;
     name: string;
     phone: string;
-    age: number;
     rating: number;
     slug: string;
     available: boolean;
