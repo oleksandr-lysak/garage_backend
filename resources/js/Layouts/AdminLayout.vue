@@ -99,6 +99,35 @@
                                                     <Link
                                                         :href="
                                                             route(
+                                                                'admin.services.index',
+                                                            )
+                                                        "
+                                                        :class="[
+                                                            route().current(
+                                                                'admin.services.*',
+                                                            )
+                                                                ? 'bg-gray-50 text-blue-600'
+                                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                                        ]"
+                                                    >
+                                                        <i
+                                                            class="fa fa-wrench text-lg"
+                                                            :class="[
+                                                                route().current(
+                                                                    'admin.services.*',
+                                                                )
+                                                                    ? 'text-blue-600'
+                                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                                            ]"
+                                                        ></i>
+                                                        Services
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link
+                                                        :href="
+                                                            route(
                                                                 'admin.import.index',
                                                             )
                                                         "
@@ -183,6 +212,29 @@
                                             ]"
                                         ></i>
                                         Masters
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        :href="route('admin.services.index')"
+                                        :class="[
+                                            route().current('admin.services.*')
+                                                ? 'bg-gray-50 text-blue-600'
+                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                        ]"
+                                    >
+                                        <i
+                                            class="fa fa-wrench text-lg"
+                                            :class="[
+                                                route().current(
+                                                    'admin.services.*',
+                                                )
+                                                    ? 'text-blue-600'
+                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                            ]"
+                                        ></i>
+                                        Services
                                     </Link>
                                 </li>
                                 <li>
