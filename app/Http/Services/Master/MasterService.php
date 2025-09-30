@@ -36,7 +36,7 @@ class MasterService
         float $zoom,
         array $filters
     ): LengthAwarePaginator {
-        $perPage = 2000;
+        $perPage = 10000;
 
         // get masters
         $masters = $this->masterSearchService->getMastersOnDistance($lat, $lng, $zoom, $filters, $perPage, $page);

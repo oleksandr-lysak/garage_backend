@@ -41,6 +41,7 @@ php /app/artisan config:cache
 php /app/artisan route:cache
 php /app/artisan view:cache
 php /app/artisan optimize:clear
+php /app/artisan storage:link
 
 # Ensure storage and cache are writable
 mkdir -p /app/storage /app/bootstrap/cache

@@ -17,7 +17,7 @@ class MasterSearchServiceQueryTest extends TestCase
 
         $service = new MasterSearchService;
 
-        $result = $service->getMastersOnDistance(50.0, 30.0, 5.0, [], 2000, 1);
+        $result = $service->getMastersOnDistance(50.0, 30.0, 5.0, [], 10000, 1);
 
         $this->assertIsArray($result);
         $this->assertEmpty($result);

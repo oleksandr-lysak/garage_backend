@@ -35,7 +35,7 @@ class MasterControllerTest extends TestCase
     public function test_index_uses_master_fetcher(): void
     {
         $mockMasterService = \Mockery::mock(\App\Http\Services\Master\MasterService::class);
-        $mockMasterService->shouldReceive('getMastersOnDistance')->once()->andReturn(new \Illuminate\Pagination\LengthAwarePaginator([], 0, 2000));
+        $mockMasterService->shouldReceive('getMastersOnDistance')->once()->andReturn(new \Illuminate\Pagination\LengthAwarePaginator([], 0, 10000));
 
         $mockRedis = \Mockery::mock(\App\Http\Services\Appointment\AppointmentRedisService::class);
         $mockRedis->shouldReceive('getAvailabilityForMany')->once()->andReturn([]);
