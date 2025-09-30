@@ -42,6 +42,69 @@ class ServiceAdminService
         ];
     }
 
+    public function get(int $serviceId): array
+    {
+        $service = Service::findOrFail($serviceId);
+
+        // Providers with marker if this service is main for them
+        $providers = DB::table('masters')
+            ->leftJoin('master_services as ms', function ($join) use ($serviceId) {
+                $join->on('ms.master_id', '=', 'masters.id')
+                    ->where('ms.service_id', '=', $serviceId);
+            })
+            ->leftJoin('services as main_s', 'main_s.id', '=', 'masters.service_id')
+            ->whereExists(function ($q) use ($serviceId) {
+                $q->from('master_services as filter_ms')
+                    ->whereColumn('filter_ms.master_id', 'masters.id')
+                    ->where('filter_ms.service_id', $serviceId);
+            })
+            ->select('masters.id', 'masters.name', 'masters.service_id as main_service_id')
+            ->orderBy('masters.name')
+            ->get()
+            ->map(fn ($m) => [
+                'id' => (int) $m->id,
+                'name' => (string) $m->name,
+                'is_main' => (int) $m->main_service_id === (int) $serviceId,
+            ])->values();
+
+        // All masters (for adding)
+        $allMasters = Master::orderBy('name')->get(['id', 'name']);
+
+        return [
+            'id' => (int) $service->id,
+            'name' => (string) $service->name,
+            'providers' => $providers,
+            'all_masters' => $allMasters->map(fn ($m) => ['id' => (int) $m->id, 'name' => (string) $m->name])->values(),
+        ];
+    }
+
+    public function update(int $serviceId, array $data): array
+    {
+        $service = Service::findOrFail($serviceId);
+        $service->fill(['name' => $data['name'] ?? $service->name]);
+        $service->save();
+        return $this->get($serviceId);
+    }
+
+    public function updateProviders(int $serviceId, array $data): array
+    {
+        $service = Service::findOrFail($serviceId);
+        $masterIds = array_values(array_unique(array_map('intval', $data['master_ids'] ?? [])));
+
+        // Protect main service constraint: a master whose main service equals $serviceId must remain attached
+        $protectedMasterIds = Master::where('service_id', $serviceId)->pluck('id')->all();
+        $finalMasterIds = array_values(array_unique(array_merge($masterIds, $protectedMasterIds)));
+
+        // Sync on pivot table master_services
+        DB::table('master_services')->where('service_id', $serviceId)->delete();
+        if (! empty($finalMasterIds)) {
+            $rows = array_map(fn ($mid) => ['master_id' => $mid, 'service_id' => $serviceId], $finalMasterIds);
+            DB::table('master_services')->insert($rows);
+        }
+
+        return $this->get($serviceId);
+    }
+
     public function getDeletePreview(int $serviceId): array
     {
         $service = Service::findOrFail($serviceId);

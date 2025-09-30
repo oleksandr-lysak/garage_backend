@@ -14,6 +14,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::get('/masters/{id}/edit', [\App\Http\Controllers\Admin\MasterController::class, 'edit'])->name('admin.masters.edit');
     Route::get('/import', [\App\Http\Controllers\Admin\ImportController::class, 'index'])->name('admin.import.index');
     Route::get('/services', [\App\Http\Controllers\Admin\ServiceController::class, 'index'])->name('admin.services.index');
+    Route::get('/services/{id}/edit', [\App\Http\Controllers\Admin\ServiceController::class, 'edit'])->name('admin.services.edit');
 });
 
 // Admin JSON API routes
@@ -31,6 +32,9 @@ Route::group(['prefix' => 'admin-api', 'middleware' => ['auth', 'api']], functio
 
     // Services management (admin)
     Route::get('/admin-services', [\App\Http\Controllers\Admin\ServiceController::class, 'list'])->name('admin.api.admin_services.list');
+    Route::get('/admin-services/{id}', [\App\Http\Controllers\Admin\ServiceController::class, 'get'])->name('admin.api.admin_services.get');
+    Route::put('/admin-services/{id}', [\App\Http\Controllers\Admin\ServiceController::class, 'update'])->name('admin.api.admin_services.update');
+    Route::put('/admin-services/{id}/providers', [\App\Http\Controllers\Admin\ServiceController::class, 'updateProviders'])->name('admin.api.admin_services.update_providers');
     Route::get('/admin-services/{id}/delete-preview', [\App\Http\Controllers\Admin\ServiceController::class, 'deletePreview'])->name('admin.api.admin_services.delete_preview');
     Route::delete('/admin-services/{id}', [\App\Http\Controllers\Admin\ServiceController::class, 'destroy'])->name('admin.api.admin_services.destroy');
     Route::post('/admin-services/bulk/delete-preview', [\App\Http\Controllers\Admin\ServiceController::class, 'bulkDeletePreview'])->name('admin.api.admin_services.bulk_delete_preview');

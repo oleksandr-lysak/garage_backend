@@ -45,6 +45,7 @@
                             <td class="px-6 py-3 text-sm font-medium text-gray-900">{{ s.name }}</td>
                             <td class="px-6 py-3 text-sm text-gray-600">{{ s.masters_count }}</td>
                             <td class="px-6 py-3 text-right space-x-3">
+                                <Link :href="route('admin.services.edit', { id: s.id })" class="text-blue-600 hover:text-blue-800">Edit</Link>
                                 <button @click="confirmDelete(s)" class="text-red-600 hover:text-red-800">Delete</button>
                             </td>
                         </tr>
@@ -102,6 +103,7 @@
 </template>
 
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { onMounted, ref, computed } from 'vue';
 

@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AdminServiceDeleteRequest;
+use App\Http\Requests\Admin\AdminServiceUpdateProvidersRequest;
+use App\Http\Requests\Admin\AdminServiceUpdateRequest;
 use App\Http\Resources\Admin\AdminServiceDeletePreviewResource;
 use App\Http\Resources\Admin\AdminServiceListResource;
 use App\Http\Resources\Admin\AdminServiceDeleteResponse;
+use App\Http\Resources\Admin\AdminServiceResource;
 use App\Http\Services\Admin\ServiceAdminService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,10 +27,35 @@ class ServiceController extends Controller
         return Inertia::render('Admin/Services/Index');
     }
 
+    public function edit(int $id): Response
+    {
+        return Inertia::render('Admin/Services/Edit', [
+            'serviceId' => $id,
+        ]);
+    }
+
     public function list(Request $request): JsonResponse
     {
         $result = $this->service->list($request->all());
         return response()->json(new AdminServiceListResource($result));
+    }
+
+    public function get(int $id): JsonResponse
+    {
+        $data = $this->service->get($id);
+        return response()->json(new AdminServiceResource($data));
+    }
+
+    public function update(int $id, AdminServiceUpdateRequest $request): JsonResponse
+    {
+        $data = $this->service->update($id, $request->validated());
+        return response()->json(new AdminServiceResource($data));
+    }
+
+    public function updateProviders(int $id, AdminServiceUpdateProvidersRequest $request): JsonResponse
+    {
+        $data = $this->service->updateProviders($id, $request->validated());
+        return response()->json(new AdminServiceResource($data));
     }
 
     public function deletePreview(int $id): JsonResponse
