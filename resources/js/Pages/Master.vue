@@ -660,7 +660,7 @@ const metaTags = computed(() => {
         ogUrl: `${window.location.origin}/masters/${masterData.slug}`,
         ogImage: `${window.location.origin}/${masterData.main_photo}`,
         ogLocale: 'uk_UA',
-        ogSiteName: 'Garage',
+        ogSiteName: 'Carbeat',
         ogType: 'profile',
         twitterCard: 'summary_large_image',
         twitterTitle: `${masterData.name} - ${services} у ${city}${ratingText}`,
