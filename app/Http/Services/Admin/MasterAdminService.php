@@ -67,6 +67,33 @@ class MasterAdminService
         });
     }
 
+    public function deleteAllMasters(): int
+    {
+        $deletedCount = 0;
+        DB::transaction(function () use (&$deletedCount) {
+            Master::query()->chunkById(200, function ($masters) use (&$deletedCount) {
+                /** @var Master $master */
+                foreach ($masters as $master) {
+                    if (method_exists($master, 'reviews')) {
+                        $master->reviews()->delete();
+                    }
+                    if (method_exists($master, 'appointments')) {
+                        $master->appointments()->delete();
+                    }
+                    if (method_exists($master, 'galleryPhotos')) {
+                        $master->galleryPhotos()->delete();
+                    }
+                    if (method_exists($master, 'services')) {
+                        $master->services()->detach();
+                    }
+                    $master->delete();
+                    $deletedCount++;
+                }
+            });
+        });
+        return $deletedCount;
+    }
+
     public function listServices()
     {
         return Service::query()->orderBy('name')->get(['id', 'name']);

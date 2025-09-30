@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\AdminMasterUpdateRequest;
 use App\Http\Requests\Admin\AdminReviewStoreRequest;
 use App\Http\Requests\Admin\AdminReviewUpdateRequest;
+use App\Http\Requests\Admin\AdminMasterBulkDeleteRequest;
 use App\Http\Resources\Admin\AdminMasterResource;
+use App\Http\Resources\Admin\AdminMasterBulkDeleteResponse;
 use App\Http\Services\Admin\MasterAdminService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\JsonResponse;
@@ -71,6 +73,12 @@ class MasterController extends Controller
     {
         $this->service->deleteMaster($id);
         return response()->json(['status' => 'ok']);
+    }
+
+    public function destroyAll(AdminMasterBulkDeleteRequest $request): JsonResponse
+    {
+        $deleted = $this->service->deleteAllMasters();
+        return response()->json(new AdminMasterBulkDeleteResponse(['deleted' => $deleted]));
     }
 
     // Reviews endpoints

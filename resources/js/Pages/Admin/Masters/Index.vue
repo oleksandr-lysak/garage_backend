@@ -32,6 +32,7 @@
                         <option value="desc">Desc</option>
                         <option value="asc">Asc</option>
                     </select>
+                    <button @click="confirmDeleteAll" class="rounded-xl bg-red-600 text-white px-4 py-2 text-sm hover:bg-red-700">Delete all</button>
                 </div>
             </div>
         </header>
@@ -156,6 +157,13 @@ async function confirmDelete(m: any) {
     if (masters.value.length === 1 && page.value > 1) {
         page.value -= 1;
     }
+    await fetchData();
+}
+
+async function confirmDeleteAll() {
+    if (! confirm('Are you sure you want to delete ALL masters? This action cannot be undone.')) return;
+    await axios.delete('/admin-api/masters');
+    page.value = 1;
     await fetchData();
 }
 
