@@ -129,6 +129,58 @@
                                                         :href="
                                                             route(
                                                                 'admin.import.index',
+                                                <li>
+                                                    <Link
+                                                        :href="
+                                                            route(
+                                                                'admin.api-docs.index',
+                                                            )
+                                                        "
+                                                        :class="[
+                                                            route().current(
+                                                                'admin.api-docs.*',
+                                                            )
+                                                                ? 'bg-gray-50 text-blue-600'
+                                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                                        ]"
+                                                    >
+                                                        <i
+                                                            class="fa fa-book text-lg"
+                                                            :class="[
+                                                                route().current(
+                                                                    'admin.api-docs.*',
+                                                                )
+                                                                    ? 'text-blue-600'
+                                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                                            ]"
+                                                        ></i>
+                                                        API Документація
+                                                    </Link>
+                                                </li>
+                                <li>
+                                    <Link
+                                        :href="route('admin.api-docs.index')"
+                                        :class="[
+                                            route().current('admin.api-docs.*')
+                                                ? 'bg-gray-50 text-blue-600'
+                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                        ]"
+                                    >
+                                        <i
+                                            class="fa fa-book text-lg"
+                                            :class="[
+                                                route().current(
+                                                    'admin.api-docs.*',
+                                                )
+                                                    ? 'text-blue-600'
+                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                            ]"
+                                        ></i>
+                                        API Документація
+                                    </Link>
+                                </li>
                                                             )
                                                         "
                                                         :class="[
@@ -240,6 +292,58 @@
                                 <li>
                                     <Link
                                         :href="route('admin.import.index')"
+                                                <li>
+                                                    <Link
+                                                        :href="
+                                                            route(
+                                                                'admin.api-docs.index',
+                                                            )
+                                                        "
+                                                        :class="[
+                                                            route().current(
+                                                                'admin.api-docs.*',
+                                                            )
+                                                                ? 'bg-gray-50 text-blue-600'
+                                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                                        ]"
+                                                    >
+                                                        <i
+                                                            class="fa fa-book text-lg"
+                                                            :class="[
+                                                                route().current(
+                                                                    'admin.api-docs.*',
+                                                                )
+                                                                    ? 'text-blue-600'
+                                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                                            ]"
+                                                        ></i>
+                                                        API Документація
+                                                    </Link>
+                                                </li>
+                                <li>
+                                    <Link
+                                        :href="route('admin.api-docs.index')"
+                                        :class="[
+                                            route().current('admin.api-docs.*')
+                                                ? 'bg-gray-50 text-blue-600'
+                                                : 'text-gray-700 hover:bg-gray-50 hover:text-blue-600',
+                                            'group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6',
+                                        ]"
+                                    >
+                                        <i
+                                            class="fa fa-book text-lg"
+                                            :class="[
+                                                route().current(
+                                                    'admin.api-docs.*',
+                                                )
+                                                    ? 'text-blue-600'
+                                                    : 'text-gray-400 group-hover:text-blue-600',
+                                            ]"
+                                        ></i>
+                                        API Документація
+                                    </Link>
+                                </li>
                                         :class="[
                                             route().current('admin.import.*')
                                                 ? 'bg-gray-50 text-blue-600'
