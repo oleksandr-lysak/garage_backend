@@ -125,7 +125,7 @@ return [
     |
     */
 
-    'access_token_ttl' => env('JWT_ACCESS_TOKEN_TTL', 15), // minutes
-    'refresh_token_ttl_days' => env('JWT_REFRESH_TOKEN_TTL_DAYS', 180), // days (0 = never expire)
+    'access_token_ttl' => env('JWT_ACCESS_TOKEN_TTL', 60), // minutes
+    'refresh_token_ttl_days' => env('JWT_REFRESH_TOKEN_TTL_DAYS', 14), // days (0 = never expire)
 
 ];
