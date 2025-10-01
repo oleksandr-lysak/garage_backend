@@ -9,9 +9,11 @@ use App\Http\Requests\AddMasterRequest;
 use App\Http\Requests\AddReviewRequest;
 use App\Http\Requests\Availability\SetAvailableMasterRequest;
 use App\Http\Requests\Availability\SetUnavailableMasterRequest;
+use App\Http\Requests\DeleteMasterGalleryPhotoRequest;
 use App\Http\Requests\GetMasterRequest;
 use App\Http\Requests\ImportExternalMasterRequest;
 use App\Http\Requests\UpdateMasterRequest;
+use App\Http\Requests\UpdateMasterServicesRequest;
 use App\Http\Resources\Api\V1\MasterResource;
 use App\Http\Resources\Api\V1\ReviewResource;
 use App\Http\Resources\Api\V1\UserResource;
@@ -26,6 +28,7 @@ use App\Models\MasterGallery;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MasterController extends Controller
@@ -155,6 +158,29 @@ class MasterController extends Controller
         return response()->json(['master' => new MasterResource($master->refresh())]);
     }
 
+    /**
+     * Update master's additional services (pivot) without touching main service_id.
+     */
+    public function updateServices(UpdateMasterServicesRequest $request, int $id): JsonResponse
+    {
+        $master = Master::findOrFail($id);
+        $this->authorize('update', $master);
+
+        $serviceIds = collect($request->validated()['service_ids'] ?? [])
+            ->map(fn ($v) => (int) $v)
+            ->unique()
+            ->values();
+
+        // Ensure main service remains represented in pivot for consistency
+        if ($master->service_id && ! $serviceIds->contains((int) $master->service_id)) {
+            $serviceIds->push((int) $master->service_id);
+        }
+
+        $master->services()->sync($serviceIds->all());
+
+        return response()->json(['status' => 'ok']);
+    }
+
     public function addGalleryPhotos(Request $request, int $id): JsonResponse
     {
         $request->validate([
@@ -170,5 +196,22 @@ class MasterController extends Controller
         }
 
         return response()->json(['message' => 'uploaded']);
+    }
+
+    public function deleteGalleryPhoto(DeleteMasterGalleryPhotoRequest $request, int $id, int $photoId): JsonResponse
+    {
+        $master = Master::findOrFail($id);
+        $this->authorize('update', $master);
+
+        $photo = MasterGallery::where('master_id', $master->id)->where('id', $photoId)->firstOrFail();
+
+        // Delete file from storage if exists
+        if (! empty($photo->photo)) {
+            Storage::disk('public')->delete($photo->photo);
+        }
+
+        $photo->delete();
+
+        return response()->json(['status' => 'ok']);
     }
 }

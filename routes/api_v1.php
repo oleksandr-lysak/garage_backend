@@ -33,6 +33,8 @@ Route::prefix('masters')->group(function () {
     Route::get('/', [MasterController::class, 'index']);
     Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/review', [MasterController::class, 'addReview']);
+        Route::put('/{id}/services', [MasterController::class, 'updateServices']);
+        Route::delete('/{id}/gallery/{photoId}', [MasterController::class, 'deleteGalleryPhoto']);
     });
     Route::put('/{id}', [MasterController::class, 'updateProfile'])->middleware('auth:api');
     Route::post('/{id}/gallery', [MasterController::class, 'addGalleryPhotos'])->middleware('auth:api');
