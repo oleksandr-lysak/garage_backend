@@ -20,10 +20,11 @@ class MasterFilterService
                 masters.service_id = :service_id
                 OR EXISTS (
                     SELECT 1 FROM master_services ms
-                    WHERE ms.master_id = masters.id AND ms.service_id = :service_id
+                    WHERE ms.master_id = masters.id AND ms.service_id = :service_id_pivot
                 )
             )';
             $queryParams['service_id'] = $filters['service_id'];
+            $queryParams['service_id_pivot'] = $filters['service_id'];
         }
 
         if (! empty($filters['rating'])) {
