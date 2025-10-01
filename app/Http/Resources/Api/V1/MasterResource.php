@@ -73,6 +73,51 @@ class MasterResource extends JsonResource
             'tariff' => is_object($this->tariff) ? (string) $this->tariff->name : (string) $this->tariff,
             'tariff_id' => (int) $this->tariff_id,
             'slug' => (string) $this->slug,
+            // Include services only for single master endpoint (when Eloquent relation is loaded)
+            'services' => $this->when(
+                ($this->resource instanceof \Illuminate\Database\Eloquent\Model)
+                    && $this->resource->relationLoaded('services'),
+                function () {
+                    return $this->services->map(fn ($s) => [
+                        'id' => (int) $s->id,
+                        'name' => (string) $s->name,
+                        'is_primary' => (int) $this->service_id === (int) $s->id,
+                    ]);
+                }
+            ),
+            // Include gallery photos list when relation is loaded
+            'photos' => $this->when(
+                ($this->resource instanceof \Illuminate\Database\Eloquent\Model)
+                    && $this->resource->relationLoaded('gallery'),
+                function () {
+                    return $this->gallery->map(fn ($g) => [
+                        'id' => (int) $g->id,
+                        'url' => (string) ('storage/'.$g->photo),
+                    ]);
+                }
+            ),
+            // Include reviews when relation is loaded
+            'reviews' => $this->when(
+                ($this->resource instanceof \Illuminate\Database\Eloquent\Model)
+                    && $this->resource->relationLoaded('reviews'),
+                function () {
+                    return $this->reviews
+                        ->sortByDesc('id')
+                        ->map(fn ($r) => [
+                            'id' => (int) $r->id,
+                            'rating' => (int) $r->rating,
+                            'review' => (string) ($r->review ?? ''),
+                            'user' => $r->relationLoaded('user') && $r->user
+                                ? [
+                                    'id' => (int) $r->user->id,
+                                    'name' => (string) ($r->user->name ?? ''),
+                                    'phone' => (string) ($r->user->phone ?? ''),
+                                ]
+                                : null,
+                            'created_at' => optional($r->created_at)->toISOString(),
+                        ]);
+                }
+            ),
         ];
     }
 

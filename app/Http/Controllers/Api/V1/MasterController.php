@@ -48,7 +48,7 @@ class MasterController extends Controller
      */
     public function getMaster(int $id): MasterResource
     {
-        $master = Master::find($id);
+        $master = Master::with(['services', 'gallery', 'reviews.user'])->findOrFail($id);
 
         return new MasterResource($master);
     }
